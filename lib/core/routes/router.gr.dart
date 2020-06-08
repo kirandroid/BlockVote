@@ -9,6 +9,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:evoting/features/exitConfirm/exitConfirmScreen.dart';
 import 'package:evoting/features/getStarted/getStartedScreen.dart';
+import 'package:evoting/features/authentication/loginScreen.dart';
+import 'package:evoting/features/authentication/registerScreen.dart';
 import 'package:evoting/features/home_screen.dart';
 import 'package:evoting/core/service/address_service.dart';
 import 'package:evoting/core/service/configuration_service.dart';
@@ -18,10 +20,14 @@ import 'package:evoting/core/routes/route_guards.dart';
 abstract class Routes {
   static const exitConfirmScreen = '/';
   static const getStartedScreen = '/get-started-screen';
+  static const loginScreen = '/login-screen';
+  static const registerScreen = '/register-screen';
   static const homeScreen = '/home-screen';
   static const all = {
     exitConfirmScreen,
     getStartedScreen,
+    loginScreen,
+    registerScreen,
     homeScreen,
   };
 }
@@ -50,6 +56,20 @@ class Router extends RouterBase {
         return MaterialPageRoute<dynamic>(
           builder: (context) => GetStartedScreen(),
           settings: settings,
+        );
+      case Routes.loginScreen:
+        return PageRouteBuilder<dynamic>(
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              LoginScreen(),
+          settings: settings,
+          transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
+        );
+      case Routes.registerScreen:
+        return PageRouteBuilder<dynamic>(
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              RegisterScreen(),
+          settings: settings,
+          transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
         );
       case Routes.homeScreen:
         if (hasInvalidArgs<HomeScreenArguments>(args)) {

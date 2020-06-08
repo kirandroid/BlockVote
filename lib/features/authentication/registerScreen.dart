@@ -4,18 +4,19 @@ import 'package:evoting/features/home_screen.dart';
 import 'package:flutter/material.dart';
 
 class RegisterScreen extends StatefulWidget {
-  final IAddressService _addressService;
-  final ConfigurationService configurationService;
-  RegisterScreen(this._addressService, this.configurationService);
   @override
   _RegisterScreenState createState() => _RegisterScreenState();
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
   String mnemonic = '';
+  ConfigurationService configurationService;
+  AddressService addressService;
   @override
   void initState() {
-    mnemonic = widget._addressService.generateMnemonic();
+    configurationService = ConfigurationService();
+    addressService = AddressService(configurationService);
+    mnemonic = addressService.generateMnemonic();
     super.initState();
   }
 
@@ -33,11 +34,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
             RaisedButton(
                 child: Text("Create Account"),
                 onPressed: () async {
-                  await widget._addressService.setupFromMnemonic(mnemonic);
+                  await addressService.setupFromMnemonic(mnemonic);
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => HomeScreen(
-                            addressService: widget._addressService,
-                            configurationService: widget.configurationService,
+                            addressService: addressService,
+                            configurationService: configurationService,
                           )));
                 })
           ],
