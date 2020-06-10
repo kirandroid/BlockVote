@@ -10,4 +10,5 @@ class UIColors {
   static const Color lightGray = Color(0xFFDDDDDD);
   static const Color mediumGray = Color(0xFF777777);
   static const Color darkGray = Color(0xFF454545);
+  static const Color greyText = Color(0xFF8D92A3);
 }

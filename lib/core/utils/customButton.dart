@@ -36,6 +36,7 @@ class _CustomButtonState extends State<CustomButton> {
         type: MaterialType.transparency,
         child: InkWell(
           onTap: widget.onPressed,
+          borderRadius: widget.buttonRadius,
           child: Container(
             padding: EdgeInsets.symmetric(vertical: UISize.width(20)),
             alignment: Alignment.center,
