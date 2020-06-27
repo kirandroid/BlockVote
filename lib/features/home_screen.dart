@@ -30,6 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final entropyMnemonic = widget.configurationService.getMnemonic();
     final mnemonic = entropyMnemonic
         .then((value) => widget.addressService.entropyToMnemonic(value));
+    mnemonic.then((value) => print("Mnemonic " + value));
 
     final privateKey =
         mnemonic.then((value) => widget.addressService.getPrivateKey(value));

@@ -1,9 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:evoting/core/utils/colors.dart';
-import 'package:evoting/core/utils/customButton.dart';
 import 'package:evoting/core/utils/sizes.dart';
 import 'package:evoting/core/utils/text_style.dart';
-import 'package:evoting/features/authentication/widgets/toggle_switch.dart';
+import 'package:evoting/core/widgets/customButton.dart';
+import 'package:evoting/features/authentication/presentation/widgets/toggle_switch.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {

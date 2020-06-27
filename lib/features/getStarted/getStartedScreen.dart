@@ -1,9 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:evoting/core/routes/router.gr.dart';
 import 'package:evoting/core/utils/colors.dart';
-import 'package:evoting/core/utils/customButton.dart';
 import 'package:evoting/core/utils/sizes.dart';
 import 'package:evoting/core/utils/text_style.dart';
+import 'package:evoting/core/widgets/customButton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_page_indicator/flutter_page_indicator.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -44,6 +44,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
               Container(
                 height: MediaQuery.of(context).size.height / 1.4,
                 child: TransformerPageView(
+                  physics: BouncingScrollPhysics(),
                   pageController: _controller,
                   itemCount: walkthroughItems.length,
                   transformer: PageTransformerBuilder(

@@ -6,7 +6,7 @@ import 'package:web3dart/credentials.dart';
 class ContractParser {
   static Future<DeployedContract> fromAssets(String contractAddress) async {
     final contractJson =
-        jsonDecode(await rootBundle.loadString('assets/Test.json'));
+        jsonDecode(await rootBundle.loadString('assets/Voting.json'));
 
     return DeployedContract(
         ContractAbi.fromJson(

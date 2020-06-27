@@ -8,13 +8,15 @@ class CustomButton extends StatefulWidget {
   final VoidCallback onPressed;
   final BorderRadiusGeometry buttonRadius;
   final Color buttonColor;
+  final double verticalPadding;
 
   const CustomButton(
       {Key key,
       this.title,
       this.onPressed,
       this.buttonRadius,
-      this.buttonColor})
+      this.buttonColor,
+      this.verticalPadding})
       : super(key: key);
 
   @override
@@ -38,7 +40,8 @@ class _CustomButtonState extends State<CustomButton> {
           onTap: widget.onPressed,
           borderRadius: widget.buttonRadius,
           child: Container(
-            padding: EdgeInsets.symmetric(vertical: UISize.width(20)),
+            padding: EdgeInsets.symmetric(
+                vertical: widget.verticalPadding ?? UISize.width(20)),
             alignment: Alignment.center,
             child: Text(
               widget.title,
