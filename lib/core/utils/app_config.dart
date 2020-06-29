@@ -1,3 +1,4 @@
+import 'package:evoting/core/routes/router.gr.dart';
 import 'package:evoting/core/service/address_service.dart';
 import 'package:evoting/core/service/configuration_service.dart';
 import 'package:evoting/core/utils/contract_parser.dart';
@@ -6,9 +7,9 @@ import 'package:http/http.dart';
 
 class AppConfig {
   final String relayWallet =
-      "c234ee8c12935f5c11ee7762cf54216d3a38c662eb2666b86b7e20e6b0ea3f3f";
+      "d0b91c2c76eca380c0d5505f60ac21778fe0b5cce3c661a5001af921eaaa7a8a";
   final String apiUrl = "http://192.168.1.12:8545";
-  final String contractAddress = "0xc8448de2b6a11fd8BaA55Cfe1d777CCEae26419C";
+  final String contractAddress = "0xf38103DfC465516f7FBE312bf34124003D00DEAa";
   // final String apiUrl =
   //     "https://ropsten.infura.io/v3/759c8e94cb37497a9218009e21542fb7";
 
@@ -60,5 +61,22 @@ class AppConfig {
         await addressService.getPublicAddress(privateKey);
 
     return publicKey;
+  }
+
+  static Future<EthereumAddress> publicKeyFromPrivate(
+      {String privateKey}) async {
+    final ConfigurationService configurationService = ConfigurationService();
+    final AddressService addressService = AddressService(configurationService);
+    final EthereumAddress publicKey =
+        await addressService.getPublicAddress(privateKey);
+
+    return publicKey;
+  }
+
+  /// Get initial route name of the app.
+  static Future<String> get initialRoute async {
+    final ConfigurationService configurationService = ConfigurationService();
+    final bool isLoggedIn = await configurationService.didSetupWallet();
+    return isLoggedIn ? Routes.homeScreen : Routes.getStartedScreen;
   }
 }

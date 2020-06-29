@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:evoting/core/routes/route_guards.dart';
 import 'package:evoting/core/routes/router.gr.dart';
+import 'package:evoting/core/utils/app_config.dart';
 import 'package:evoting/core/utils/contract_parser.dart';
 import 'package:evoting/core/service/address_service.dart';
 import 'package:evoting/core/service/configuration_service.dart';
@@ -37,9 +38,9 @@ void main() async {
   // ));
   final configurationService = ConfigurationService();
   final addressService = AddressService(configurationService);
-  runApp(MainApp(
-      addressService: addressService,
-      configurationService: configurationService));
+  // runApp(MainApp(
+  //     addressService: addressService,
+  //     configurationService: configurationService));
 
   // Create storage
   final storage = new FlutterSecureStorage();
@@ -51,32 +52,41 @@ void main() async {
     // Write value
     await storage.write(key: "encryptedBoxKey", value: key.toString());
   }
+  final String initialRoute = await AppConfig.initialRoute;
+  runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
+    builder: (ctx, _) => ExtendedNavigator<Router>(
+      router: Router(),
+      guards: [AuthGuard()],
+      initialRoute: initialRoute,
+    ),
+  ));
 }
 
-class MainApp extends StatelessWidget {
-  AddressService addressService;
-  ConfigurationService configurationService;
-  MainApp({this.addressService, this.configurationService});
-  @override
-  Widget build(BuildContext context) {
-    // return MaterialApp(
-    //   debugShowCheckedModeBanner: false,
-    //   // home: RegisterScreen(this.addressService, this.configurationService),
-    //   home: HomeScreen(
-    //     addressService: this.addressService,
-    //     configurationService: this.configurationService,
-    //   ),
-    // );
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      builder: (ctx, _) => ExtendedNavigator<Router>(
-        router: Router(),
-        guards: [AuthGuard()],
-        initialRoute: Routes.getStartedScreen,
-      ),
-    );
-  }
-}
+// class MainApp extends StatelessWidget {
+//   AddressService addressService;
+//   ConfigurationService configurationService;
+//   MainApp({this.addressService, this.configurationService});
+//   @override
+//   Widget build(BuildContext context) {
+//     // return MaterialApp(
+//     //   debugShowCheckedModeBanner: false,
+//     //   // home: RegisterScreen(this.addressService, this.configurationService),
+//     //   home: HomeScreen(
+//     //     addressService: this.addressService,
+//     //     configurationService: this.configurationService,
+//     //   ),
+//     // );
+//     return MaterialApp(
+//       debugShowCheckedModeBanner: false,
+//       builder: (ctx, _) => ExtendedNavigator<Router>(
+//         router: Router(),
+//         guards: [AuthGuard()],
+//         initialRoute: Routes.getStartedScreen,
+//       ),
+//     );
+//   }
+// }
 
 class MyApp extends StatefulWidget {
   Web3Client client;

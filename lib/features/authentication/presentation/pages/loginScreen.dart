@@ -75,6 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       UIColors.primaryDarkTeal
                     ],
                     onToggle: (index) {
+                      seedPhraseController.clear();
                       setState(() {
                         _loginType = index == 0 ? "seed" : "private";
                       });

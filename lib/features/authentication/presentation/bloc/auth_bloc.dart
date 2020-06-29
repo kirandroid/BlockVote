@@ -48,37 +48,59 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     } else if (event is LoginUser) {
       yield AuthLoading();
+
+      final DeployedContract contract =
+          await AppConfig.contract.then((value) => value);
+      final ConfigurationService configurationService = ConfigurationService();
+      final AddressService addressService =
+          AddressService(configurationService);
+
       if (event.loginUsingSeed) {
         final EthereumAddress publicKey =
             await AppConfig.publicKeyFromSeed(seedPhrase: event.seedPhrase);
+        AuthState stateFromLogin = await _checkLoginState(
+            context: event.context, publicKey: publicKey, contract: contract);
+        if (stateFromLogin is AuthCompleted) {
+          addressService.setupFromMnemonic(event.seedPhrase);
+          yield stateFromLogin;
+        } else {
+          yield stateFromLogin;
+        }
+      } else {
+        final EthereumAddress publicKey =
+            await AppConfig.publicKeyFromPrivate(privateKey: event.privateKey);
+        AuthState stateFromLogin = await _checkLoginState(
+            context: event.context, publicKey: publicKey, contract: contract);
+        if (stateFromLogin is AuthCompleted) {
+          addressService.setupFromPrivateKey(event.privateKey);
+          yield stateFromLogin;
+        } else {
+          yield stateFromLogin;
+        }
+      }
+    }
+  }
 
-        AppConfig.contract.then((contract) async {
-          final getUserFunction = contract.function('getUser');
-          UserResponse userResponse = UserResponse.fromMap(await AppConfig()
-              .ethClient()
-              .call(
-                  contract: contract,
-                  function: getUserFunction,
-                  params: [publicKey]));
-          if (userResponse.userId.toString() ==
-              "0x0000000000000000000000000000000000000000") {
-            // yield AuthError();
-            Toast().showToast(
-                context: event.context,
-                message: "Error while login!",
-                title: "Error!");
-          } else {
-            // yield AuthCompleted();
-            // ExtendedNavigator.of(event.context)
-            //     .pushReplacementNamed(Routes.registerCompleteScreen);
-            Toast().showToast(
-                context: event.context,
-                message:
-                    "FirstName: ${userResponse.firstName} | LastName: ${userResponse.lastName}",
-                title: "Success!");
-          }
-        });
-      } else {}
+  Future<AuthState> _checkLoginState(
+      {EthereumAddress publicKey,
+      BuildContext context,
+      DeployedContract contract}) async {
+    final getUserFunction = contract.function('getUser');
+    UserResponse userResponse = UserResponse.fromMap(await AppConfig()
+        .ethClient()
+        .call(
+            contract: contract,
+            function: getUserFunction,
+            params: [publicKey]));
+    if (userResponse.userId.toString() ==
+        "0x0000000000000000000000000000000000000000") {
+      Toast().showToast(
+          context: context, message: "Error while login!", title: "Error!");
+      return AuthError();
+    } else {
+      ExtendedNavigator.of(context).pushReplacementNamed(Routes.homeScreen);
+      print("Success");
+      return AuthCompleted();
     }
   }
 }
