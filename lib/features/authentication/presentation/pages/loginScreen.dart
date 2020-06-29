@@ -3,6 +3,7 @@ import 'package:evoting/core/utils/colors.dart';
 import 'package:evoting/core/utils/sizes.dart';
 import 'package:evoting/core/utils/text_style.dart';
 import 'package:evoting/core/widgets/customButton.dart';
+import 'package:evoting/features/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:evoting/features/authentication/presentation/widgets/toggle_switch.dart';
 import 'package:flutter/material.dart';
 
@@ -13,9 +14,19 @@ class LoginScreen extends StatefulWidget {
 // private: aa817d42c4355d1a7fb29456a38c718b6305884099ab544660288e1b542d8ce9
 // address: 0xc5347ee4386b5b1ebf59488c8028b56ba65163ac
 
+//benefit stand jar trim oak also rail lazy calm disorder bubble success
+
 class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController seedPhraseController;
+  TextEditingController seedPhraseController = TextEditingController();
   String _loginType = "seed";
+
+  AuthBloc _authBloc = AuthBloc();
+
+  @override
+  void dispose() {
+    _authBloc.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +118,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: CustomButton(
                   buttonColor: UIColors.primaryDarkTeal,
                   title: "LOGIN",
-                  onPressed: () {},
+                  onPressed: () {
+                    _authBloc.add(LoginUser(
+                        loginUsingSeed: _loginType == 'seed' ? true : false,
+                        privateKey: seedPhraseController.text,
+                        seedPhrase: seedPhraseController.text,
+                        context: context));
+                  },
                 ),
               )
             ],

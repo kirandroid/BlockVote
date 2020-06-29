@@ -4,7 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Toast {
-  void showToast({BuildContext context, String message, String title}) {
+  void showToast(
+      {BuildContext context, String message, String title, Color bgColor}) {
     Flushbar(
       margin: EdgeInsets.all(8),
       title: title,
@@ -12,7 +13,7 @@ class Toast {
       duration: Duration(seconds: 2),
       borderRadius: 8,
       isDismissible: true,
-      backgroundColor: UIColors.primaryPink,
+      backgroundColor: bgColor ?? UIColors.primaryPink,
       flushbarStyle: FlushbarStyle.FLOATING,
       flushbarPosition: FlushbarPosition.BOTTOM,
     )..show(context);

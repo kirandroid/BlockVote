@@ -1,13 +1,16 @@
 import 'dart:async';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:bloc/bloc.dart';
-import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
-import 'package:bip39/bip39.dart' as bip39;
+import 'package:evoting/core/routes/router.gr.dart';
 import 'package:evoting/core/service/address_service.dart';
 import 'package:evoting/core/service/configuration_service.dart';
 import 'package:evoting/core/utils/app_config.dart';
-import 'package:web3dart/contracts.dart';
+import 'package:evoting/core/utils/colors.dart';
+import 'package:evoting/core/widgets/toast.dart';
+import 'package:evoting/features/authentication/domain/entities/user_response.dart';
+import 'package:flutter/widgets.dart';
 import 'package:web3dart/credentials.dart';
 import 'package:web3dart/web3dart.dart';
 
@@ -23,36 +26,59 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthEvent event,
   ) async* {
     if (event is RegisterUser) {
-      final ConfigurationService configurationService = ConfigurationService();
-      final AddressService addressService =
-          AddressService(configurationService);
-      final String privateKey = addressService.getPrivateKey(event.seedPhrase);
-      final EthereumAddress publicKey = await addressService.getPublicAddress(
-          "AD4B73FFC7D73417AA67B7AB8327F5BD6DE92C11E9F0C5FD8BE631C270282493");
-
-      final credentials = await AppConfig().ethClient().credentialsFromPrivateKey(
-          "AD4B73FFC7D73417AA67B7AB8327F5BD6DE92C11E9F0C5FD8BE631C270282493");
+      final EthereumAddress publicKey =
+          await AppConfig.publicKeyFromSeed(seedPhrase: event.seedPhrase);
 
       yield AuthLoading();
-      // try {
-      //   Response response =
-      //       await Dio().get('https://faucet.ropsten.be/donate/$publicKey');
-      //   print(response);
-      // } catch (e) {
-      //   print(e);
-      // }
-      AppConfig.contractAddress.then((contract) async {
-        final registerFunction = contract.function('registerUser');
-        await AppConfig()
-            .ethClient()
-            .sendTransaction(
-                credentials,
-                Transaction.callContract(
-                    contract: contract,
-                    function: registerFunction,
-                    parameters: [publicKey, event.firstName, event.lastName]))
-            .then((value) => print(value));
-      });
+
+      final bool response = await AppConfig.runTransaction(
+          functionName: 'registerUser',
+          parameter: [publicKey, event.firstName, event.lastName]);
+
+      if (response) {
+        yield AuthCompleted();
+        ExtendedNavigator.of(event.context)
+            .pushReplacementNamed(Routes.registerCompleteScreen);
+      } else {
+        yield AuthError();
+        Toast().showToast(
+            context: event.context,
+            message: "Error while registering!",
+            title: "Error!");
+      }
+    } else if (event is LoginUser) {
+      yield AuthLoading();
+      if (event.loginUsingSeed) {
+        final EthereumAddress publicKey =
+            await AppConfig.publicKeyFromSeed(seedPhrase: event.seedPhrase);
+
+        AppConfig.contract.then((contract) async {
+          final getUserFunction = contract.function('getUser');
+          UserResponse userResponse = UserResponse.fromMap(await AppConfig()
+              .ethClient()
+              .call(
+                  contract: contract,
+                  function: getUserFunction,
+                  params: [publicKey]));
+          if (userResponse.userId.toString() ==
+              "0x0000000000000000000000000000000000000000") {
+            // yield AuthError();
+            Toast().showToast(
+                context: event.context,
+                message: "Error while login!",
+                title: "Error!");
+          } else {
+            // yield AuthCompleted();
+            // ExtendedNavigator.of(event.context)
+            //     .pushReplacementNamed(Routes.registerCompleteScreen);
+            Toast().showToast(
+                context: event.context,
+                message:
+                    "FirstName: ${userResponse.firstName} | LastName: ${userResponse.lastName}",
+                title: "Success!");
+          }
+        });
+      } else {}
     }
   }
 }

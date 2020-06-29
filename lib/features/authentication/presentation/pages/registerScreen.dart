@@ -7,7 +7,6 @@ import 'package:evoting/core/utils/text_style.dart';
 import 'package:evoting/core/widgets/customButton.dart';
 import 'package:evoting/core/widgets/toast.dart';
 import 'package:evoting/features/authentication/presentation/bloc/auth_bloc.dart';
-import 'package:evoting/features/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -194,17 +193,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         bottomRight: Radius.circular(10)),
                     title: "Register",
                     verticalPadding: UISize.width(16),
-                    onPressed: () async {
+                    onPressed: () {
                       _authBloc.add(RegisterUser(
                           firstName: firstNameController.text,
                           lastName: lastNameController.text,
-                          seedPhrase: mnemonic));
-                      // await addressService.setupFromMnemonic(mnemonic);
-                      // Navigator.of(context).push(MaterialPageRoute(
-                      //     builder: (context) => HomeScreen(
-                      //           addressService: addressService,
-                      //           configurationService: configurationService,
-                      //         )));
+                          seedPhrase: mnemonic,
+                          context: context));
                     },
                   ),
                 )

@@ -11,6 +11,7 @@ import 'package:evoting/features/exitConfirm/exitConfirmScreen.dart';
 import 'package:evoting/features/getStarted/getStartedScreen.dart';
 import 'package:evoting/features/authentication/presentation/pages/loginScreen.dart';
 import 'package:evoting/features/authentication/presentation/pages/registerScreen.dart';
+import 'package:evoting/features/authentication/presentation/pages/register_complete_screen.dart';
 import 'package:evoting/features/home_screen.dart';
 import 'package:evoting/core/service/address_service.dart';
 import 'package:evoting/core/service/configuration_service.dart';
@@ -22,12 +23,14 @@ abstract class Routes {
   static const getStartedScreen = '/get-started-screen';
   static const loginScreen = '/login-screen';
   static const registerScreen = '/register-screen';
+  static const registerCompleteScreen = '/register-complete-screen';
   static const homeScreen = '/home-screen';
   static const all = {
     exitConfirmScreen,
     getStartedScreen,
     loginScreen,
     registerScreen,
+    registerCompleteScreen,
     homeScreen,
   };
 }
@@ -70,6 +73,11 @@ class Router extends RouterBase {
               RegisterScreen(),
           settings: settings,
           transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
+        );
+      case Routes.registerCompleteScreen:
+        return MaterialPageRoute<dynamic>(
+          builder: (context) => RegisterCompleteScreen(),
+          settings: settings,
         );
       case Routes.homeScreen:
         if (hasInvalidArgs<HomeScreenArguments>(args)) {

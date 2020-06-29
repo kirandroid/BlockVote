@@ -3,6 +3,7 @@ import 'package:auto_route/auto_route_annotations.dart';
 import 'package:evoting/core/routes/route_guards.dart';
 import 'package:evoting/features/authentication/presentation/pages/loginScreen.dart';
 import 'package:evoting/features/authentication/presentation/pages/registerScreen.dart';
+import 'package:evoting/features/authentication/presentation/pages/register_complete_screen.dart';
 import 'package:evoting/features/exitConfirm/exitConfirmScreen.dart';
 import 'package:evoting/features/getStarted/getStartedScreen.dart';
 import 'package:evoting/features/home_screen.dart';
@@ -20,6 +21,8 @@ class $Router {
     transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
   )
   RegisterScreen registerScreen;
+
+  RegisterCompleteScreen registerCompleteScreen;
 
   @GuardedBy([AuthGuard])
   HomeScreen homeScreen;
