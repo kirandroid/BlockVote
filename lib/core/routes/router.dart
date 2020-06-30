@@ -7,6 +7,7 @@ import 'package:evoting/features/authentication/presentation/pages/register_comp
 import 'package:evoting/features/exitConfirm/exitConfirmScreen.dart';
 import 'package:evoting/features/getStarted/getStartedScreen.dart';
 import 'package:evoting/features/home_screen.dart';
+import 'package:evoting/features/indexScreen/index_screen.dart';
 
 @MaterialAutoRouter()
 class $Router {
@@ -25,5 +26,6 @@ class $Router {
   RegisterCompleteScreen registerCompleteScreen;
 
   @GuardedBy([AuthGuard])
+  IndexScreen indexScreen;
   HomeScreen homeScreen;
 }

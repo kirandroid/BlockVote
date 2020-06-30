@@ -12,11 +12,12 @@ import 'package:evoting/features/getStarted/getStartedScreen.dart';
 import 'package:evoting/features/authentication/presentation/pages/loginScreen.dart';
 import 'package:evoting/features/authentication/presentation/pages/registerScreen.dart';
 import 'package:evoting/features/authentication/presentation/pages/register_complete_screen.dart';
+import 'package:evoting/features/indexScreen/index_screen.dart';
+import 'package:evoting/core/routes/route_guards.dart';
 import 'package:evoting/features/home_screen.dart';
 import 'package:evoting/core/service/address_service.dart';
 import 'package:evoting/core/service/configuration_service.dart';
 import 'package:evoting/core/service/contract_service.dart';
-import 'package:evoting/core/routes/route_guards.dart';
 
 abstract class Routes {
   static const exitConfirmScreen = '/';
@@ -24,6 +25,7 @@ abstract class Routes {
   static const loginScreen = '/login-screen';
   static const registerScreen = '/register-screen';
   static const registerCompleteScreen = '/register-complete-screen';
+  static const indexScreen = '/index-screen';
   static const homeScreen = '/home-screen';
   static const all = {
     exitConfirmScreen,
@@ -31,6 +33,7 @@ abstract class Routes {
     loginScreen,
     registerScreen,
     registerCompleteScreen,
+    indexScreen,
     homeScreen,
   };
 }
@@ -40,7 +43,7 @@ class Router extends RouterBase {
   Set<String> get allRoutes => Routes.all;
   @override
   Map<String, List<Type>> get guardedRoutes => {
-        Routes.homeScreen: [AuthGuard],
+        Routes.indexScreen: [AuthGuard],
       };
   @Deprecated('call ExtendedNavigator.ofRouter<Router>() directly')
   static ExtendedNavigatorState get navigator =>
@@ -77,6 +80,11 @@ class Router extends RouterBase {
       case Routes.registerCompleteScreen:
         return MaterialPageRoute<dynamic>(
           builder: (context) => RegisterCompleteScreen(),
+          settings: settings,
+        );
+      case Routes.indexScreen:
+        return MaterialPageRoute<dynamic>(
+          builder: (context) => IndexScreen(),
           settings: settings,
         );
       case Routes.homeScreen:

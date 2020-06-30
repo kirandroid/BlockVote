@@ -98,7 +98,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           context: context, message: "Error while login!", title: "Error!");
       return AuthError();
     } else {
-      ExtendedNavigator.of(context).pushReplacementNamed(Routes.homeScreen);
+      ExtendedNavigator.of(context).pushReplacementNamed(Routes.indexScreen);
       print("Success");
       return AuthCompleted();
     }

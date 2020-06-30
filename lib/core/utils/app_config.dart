@@ -77,6 +77,6 @@ class AppConfig {
   static Future<String> get initialRoute async {
     final ConfigurationService configurationService = ConfigurationService();
     final bool isLoggedIn = await configurationService.didSetupWallet();
-    return isLoggedIn ? Routes.homeScreen : Routes.getStartedScreen;
+    return isLoggedIn ? Routes.indexScreen : Routes.getStartedScreen;
   }
 }
