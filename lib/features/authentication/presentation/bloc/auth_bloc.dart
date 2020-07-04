@@ -7,7 +7,6 @@ import 'package:evoting/core/routes/router.gr.dart';
 import 'package:evoting/core/service/address_service.dart';
 import 'package:evoting/core/service/configuration_service.dart';
 import 'package:evoting/core/utils/app_config.dart';
-import 'package:evoting/core/utils/colors.dart';
 import 'package:evoting/core/widgets/toast.dart';
 import 'package:evoting/features/authentication/domain/entities/user_response.dart';
 import 'package:flutter/widgets.dart';

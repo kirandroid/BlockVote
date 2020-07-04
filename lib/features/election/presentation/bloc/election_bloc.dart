@@ -4,7 +4,6 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:evoting/core/utils/app_config.dart';
 import 'package:evoting/features/election/domain/entities/election_response.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:web3dart/web3dart.dart';
 
 part 'election_event.dart';

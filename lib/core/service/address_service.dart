@@ -48,7 +48,8 @@ class AddressService implements IAddressService {
   @override
   Future<bool> setupFromMnemonic(String mnemonic) async {
     final cryptMnemonic = bip39.mnemonicToEntropy(mnemonic);
-    await _configService.setPrivateKey(null);
+    final String privateKey = getPrivateKey(mnemonic);
+    await _configService.setPrivateKey(privateKey);
     await _configService.setMnemonic(cryptMnemonic);
     await _configService.setupDone(true);
     return true;

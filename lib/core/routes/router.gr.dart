@@ -14,10 +14,7 @@ import 'package:evoting/features/authentication/presentation/pages/registerScree
 import 'package:evoting/features/authentication/presentation/pages/register_complete_screen.dart';
 import 'package:evoting/features/indexScreen/index_screen.dart';
 import 'package:evoting/core/routes/route_guards.dart';
-import 'package:evoting/features/home_screen.dart';
-import 'package:evoting/core/service/address_service.dart';
-import 'package:evoting/core/service/configuration_service.dart';
-import 'package:evoting/core/service/contract_service.dart';
+import 'package:evoting/features/election/presentation/pages/create_election_screen.dart';
 
 abstract class Routes {
   static const exitConfirmScreen = '/';
@@ -26,7 +23,7 @@ abstract class Routes {
   static const registerScreen = '/register-screen';
   static const registerCompleteScreen = '/register-complete-screen';
   static const indexScreen = '/index-screen';
-  static const homeScreen = '/home-screen';
+  static const createElectionScreen = '/create-election-screen';
   static const all = {
     exitConfirmScreen,
     getStartedScreen,
@@ -34,7 +31,7 @@ abstract class Routes {
     registerScreen,
     registerCompleteScreen,
     indexScreen,
-    homeScreen,
+    createElectionScreen,
   };
 }
 
@@ -44,6 +41,7 @@ class Router extends RouterBase {
   @override
   Map<String, List<Type>> get guardedRoutes => {
         Routes.indexScreen: [AuthGuard],
+        Routes.createElectionScreen: [AuthGuard],
       };
   @Deprecated('call ExtendedNavigator.ofRouter<Router>() directly')
   static ExtendedNavigatorState get navigator =>
@@ -51,7 +49,6 @@ class Router extends RouterBase {
 
   @override
   Route<dynamic> onGenerateRoute(RouteSettings settings) {
-    final args = settings.arguments;
     switch (settings.name) {
       case Routes.exitConfirmScreen:
         return MaterialPageRoute<dynamic>(
@@ -87,33 +84,15 @@ class Router extends RouterBase {
           builder: (context) => IndexScreen(),
           settings: settings,
         );
-      case Routes.homeScreen:
-        if (hasInvalidArgs<HomeScreenArguments>(args)) {
-          return misTypedArgsRoute<HomeScreenArguments>(args);
-        }
-        final typedArgs = args as HomeScreenArguments ?? HomeScreenArguments();
-        return MaterialPageRoute<dynamic>(
-          builder: (context) => HomeScreen(
-              addressService: typedArgs.addressService,
-              configurationService: typedArgs.configurationService,
-              contractService: typedArgs.contractService),
+      case Routes.createElectionScreen:
+        return PageRouteBuilder<dynamic>(
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              CreateElectionScreen(),
           settings: settings,
+          transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
         );
       default:
         return unknownRoutePage(settings.name);
     }
   }
-}
-
-// *************************************************************************
-// Arguments holder classes
-// **************************************************************************
-
-//HomeScreen arguments holder class
-class HomeScreenArguments {
-  final IAddressService addressService;
-  final IConfigurationService configurationService;
-  final IContractService contractService;
-  HomeScreenArguments(
-      {this.addressService, this.configurationService, this.contractService});
 }
