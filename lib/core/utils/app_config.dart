@@ -7,9 +7,9 @@ import 'package:http/http.dart';
 
 class AppConfig {
   final String relayWallet =
-      "d0b91c2c76eca380c0d5505f60ac21778fe0b5cce3c661a5001af921eaaa7a8a";
-  final String apiUrl = "http://192.168.1.12:8545";
-  final String contractAddress = "0xf38103DfC465516f7FBE312bf34124003D00DEAa";
+      "b8277c118e2d1ee3ffbf94ed42bc158f144d863aa72d83ba9dc58e70334d2a3c";
+  final String apiUrl = "http://192.168.1.13:8545";
+  final String contractAddress = "0xe443Ab7c529267C94f501ba1D000364eF9d9EEc0";
   // final String apiUrl =
   //     "https://ropsten.infura.io/v3/759c8e94cb37497a9218009e21542fb7";
 
@@ -41,14 +41,22 @@ class AppConfig {
 
     final function = deployedContract.function(functionName);
     try {
-      await AppConfig().ethClient().sendTransaction(
-          credentials,
-          Transaction.callContract(
-              contract: deployedContract,
-              function: function,
-              parameters: parameter));
+      await AppConfig()
+          .ethClient()
+          .sendTransaction(
+              credentials,
+              Transaction.callContract(
+                  contract: deployedContract,
+                  function: function,
+                  parameters: parameter,
+                  gasPrice: EtherAmount.fromUnitAndValue(EtherUnit.gwei, 1)))
+          .then((value) => print(value))
+          .catchError((onError) {
+        print(onError);
+      });
       return true;
     } catch (e) {
+      print(e);
       return false;
     }
   }

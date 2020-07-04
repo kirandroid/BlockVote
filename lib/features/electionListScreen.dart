@@ -1,14 +1,14 @@
 import 'dart:async';
+import 'package:evoting/core/service/configuration_service.dart';
+import 'package:evoting/core/utils/app_config.dart';
+import 'package:evoting/core/utils/contract_parser.dart';
+import 'package:http/http.dart';
 
 import 'package:flutter/material.dart';
 import 'package:web3dart/credentials.dart';
 import 'package:web3dart/web3dart.dart';
 
 class ElectionListScreen extends StatefulWidget {
-  Web3Client client;
-  Credentials credentials;
-  DeployedContract contract;
-  ElectionListScreen({this.client, this.contract, this.credentials});
   @override
   _ElectionListScreenState createState() => _ElectionListScreenState();
 }
@@ -26,16 +26,26 @@ class _ElectionListScreenState extends State<ElectionListScreen> {
 
   @override
   void dispose() {
-    widget.client.dispose();
     countEvent.asFuture();
     countEvent.cancel();
     super.dispose();
   }
 
   void getElections() async {
-    final getElections = widget.contract.function('getAllElections');
-    await widget.client.call(
-        contract: widget.contract,
+    final Client httpClient = Client();
+
+    Web3Client client = Web3Client("http://192.168.1.13:8545", httpClient);
+    final DeployedContract deployedContract = await ContractParser.fromAssets(
+        "0xb4f35e69d1Cae6a491F250B71Ed4fc0CEbF31740");
+
+    final Credentials credentials = await AppConfig()
+        .ethClient()
+        .credentialsFromPrivateKey(
+            "7aacfcb9320a4e039cfe7c3bffb349d3fff6350065bd729ada6143133f92e313");
+
+    final getElections = deployedContract.function('getAllPolls');
+    await client.call(
+        contract: deployedContract,
         function: getElections,
         params: []).then((value) {
       setState(() {
@@ -43,9 +53,9 @@ class _ElectionListScreenState extends State<ElectionListScreen> {
       });
     });
 
-    final getCount = widget.contract.function('count');
-    await widget.client.call(
-        contract: widget.contract,
+    final getCount = deployedContract.function('count');
+    await client.call(
+        contract: deployedContract,
         function: getCount,
         params: []).then((value) {
       setState(() {
@@ -53,10 +63,10 @@ class _ElectionListScreenState extends State<ElectionListScreen> {
       });
     });
 
-    final countEventFunc = widget.contract.event('ElectionResult');
-    countEvent = widget.client
+    final countEventFunc = deployedContract.event('ElectionResult');
+    countEvent = client
         .events(FilterOptions.events(
-            contract: widget.contract, event: countEventFunc))
+            contract: deployedContract, event: countEventFunc))
         .listen((event) {
       setState(() {
         final decoded = countEventFunc.decodeResults(event.topics, event.data);
@@ -67,34 +77,80 @@ class _ElectionListScreenState extends State<ElectionListScreen> {
   }
 
   void increaseCount() async {
-    final eventCount = widget.contract.function('eventCount');
-    await widget.client.sendTransaction(
-        widget.credentials,
+    final Client httpClient = Client();
+
+    Web3Client client = Web3Client("http://192.168.1.13:8545", httpClient);
+    final DeployedContract deployedContract = await ContractParser.fromAssets(
+        "0xb4f35e69d1Cae6a491F250B71Ed4fc0CEbF31740");
+
+    final Credentials credentials = await AppConfig()
+        .ethClient()
+        .credentialsFromPrivateKey(
+            "7aacfcb9320a4e039cfe7c3bffb349d3fff6350065bd729ada6143133f92e313");
+    final eventCount = deployedContract.function('eventCount');
+    await client.sendTransaction(
+        credentials,
         Transaction.callContract(
-            contract: widget.contract, function: eventCount, parameters: []));
+            contract: deployedContract, function: eventCount, parameters: []));
   }
 
   void createElection(String name) async {
-    final createElection = widget.contract.function('create');
+    final Client httpClient = Client();
 
-    await widget.client
+    Web3Client client = Web3Client("http://192.168.1.13:8545", httpClient);
+    final DeployedContract deployedContract = await ContractParser.fromAssets(
+        "0xb4f35e69d1Cae6a491F250B71Ed4fc0CEbF31740");
+
+    final Credentials credentials = await AppConfig()
+        .ethClient()
+        .credentialsFromPrivateKey(
+            "b8277c118e2d1ee3ffbf94ed42bc158f144d863aa72d83ba9dc58e70334d2a3c");
+
+    final ConfigurationService configurationService = ConfigurationService();
+    final String privateKey = await configurationService.getPrivateKey();
+    final EthereumAddress publicKey =
+        await AppConfig.publicKeyFromPrivate(privateKey: privateKey);
+    final createElection = deployedContract.function('createElection');
+
+    await client
         .sendTransaction(
-            widget.credentials,
+            credentials,
             Transaction.callContract(
-                contract: widget.contract,
+                contract: deployedContract,
                 function: createElection,
-                parameters: [name]))
+                maxGas: 10000000,
+                parameters: [
+                  name,
+                  publicKey,
+                  "123456",
+                  true,
+                  BigInt.from(2345),
+                  BigInt.from(6585),
+                  true,
+                  ["sd", "ds"],
+                  "https://i.picsum.photos/id/800/536/354.jpg?hmac=VW0nKG7z_s-ANopnZfiYpCRz_PxyLNuLVATaFRiCcfc"
+                ]))
         .then((_) => getElections());
   }
 
   void deleteElection(BigInt id) async {
-    final deleteElection = widget.contract.function('destroy');
+    final Client httpClient = Client();
 
-    await widget.client
+    Web3Client client = Web3Client("http://192.168.1.13:8545", httpClient);
+    final DeployedContract deployedContract = await ContractParser.fromAssets(
+        "0xb4f35e69d1Cae6a491F250B71Ed4fc0CEbF31740");
+
+    final Credentials credentials = await AppConfig()
+        .ethClient()
+        .credentialsFromPrivateKey(
+            "7aacfcb9320a4e039cfe7c3bffb349d3fff6350065bd729ada6143133f92e313");
+    final deleteElection = deployedContract.function('destroy');
+
+    await client
         .sendTransaction(
-            widget.credentials,
+            credentials,
             Transaction.callContract(
-                contract: widget.contract,
+                contract: deployedContract,
                 function: deleteElection,
                 parameters: [id]))
         .then((_) => getElections());
