@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:evoting/core/service/configuration_service.dart';
 import 'package:evoting/core/utils/app_config.dart';
@@ -14,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:http/http.dart';
+import 'package:crypto/crypto.dart';
 
 class CreateElectionScreen extends StatefulWidget {
   @override
@@ -257,6 +259,9 @@ class _CreateElectionScreenState extends State<CreateElectionScreen> {
                 await AppConfig.publicKeyFromPrivate(privateKey: privateKey);
             final Client httpClient = Client();
 
+            List<int> bytes = utf8.encode(passwordController.text);
+            Digest hashedpassword = sha1.convert(bytes);
+
             Web3Client client =
                 Web3Client("http://192.168.1.13:8545", httpClient);
             final DeployedContract deployedContract =
@@ -277,7 +282,7 @@ class _CreateElectionScreenState extends State<CreateElectionScreen> {
                     parameters: [
                       electionNameController.text,
                       publicKey,
-                      passwordController.text,
+                      hashedpassword.toString(),
                       hasPassword,
                       BigInt.from(startDate.millisecondsSinceEpoch),
                       BigInt.from(endDate.millisecondsSinceEpoch),
