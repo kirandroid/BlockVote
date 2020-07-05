@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:evoting/di.dart';
+import 'package:evoting/features/election/domain/entities/candidate_response.dart';
 import 'package:evoting/features/election/presentation/bloc/election_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -10,6 +11,7 @@ import 'package:evoting/core/utils/text_style.dart';
 import 'package:evoting/core/widgets/calender_popup_view.dart';
 import 'package:evoting/core/widgets/election_cover_image_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 class CreateElectionScreen extends StatefulWidget {
   @override
@@ -27,7 +29,7 @@ class _CreateElectionScreenState extends State<CreateElectionScreen> {
   String showDateFrom = "--";
   String showDateTo = "--";
 
-  List candidates = [];
+  List<CandidateResponse> candidates = [];
 
   TextEditingController electionNameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -35,6 +37,7 @@ class _CreateElectionScreenState extends State<CreateElectionScreen> {
 
   @override
   void dispose() {
+    _electionBloc.drain();
     _electionBloc.close();
     super.dispose();
   }
@@ -210,8 +213,12 @@ class _CreateElectionScreenState extends State<CreateElectionScreen> {
                           ),
                           RaisedButton(
                             onPressed: () {
+                              var uuid = new Uuid();
                               setState(() {
-                                candidates.add(candidateController.text);
+                                candidates.add(CandidateResponse(
+                                    candidateId: uuid.v4(),
+                                    candidateImage: "blockvote.png",
+                                    candidateName: candidateController.text));
                                 candidateController.clear();
                               });
                             },
@@ -239,7 +246,7 @@ class _CreateElectionScreenState extends State<CreateElectionScreen> {
                               );
                             } else {
                               return ListTile(
-                                title: Text(candidates[index]),
+                                title: Text(candidates[index].candidateName),
                               );
                             }
                           })
@@ -253,6 +260,7 @@ class _CreateElectionScreenState extends State<CreateElectionScreen> {
           icon: Icon(Icons.cloud_upload),
           label: Text("Submit"),
           onPressed: () {
+            sl.reset();
             _electionBloc.add(CreateElection(
                 electionName: electionNameController.text,
                 electionPassword: passwordController.text,

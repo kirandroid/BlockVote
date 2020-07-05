@@ -19,7 +19,7 @@ class CreateElection implements ElectionEvent {
   final DateTime startDate;
   final DateTime endDate;
   final bool isActive;
-  final List candidates;
+  final List<CandidateResponse> candidates;
   final File image;
 
   CreateElection(

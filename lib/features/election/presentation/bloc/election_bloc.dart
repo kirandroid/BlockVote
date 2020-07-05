@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:evoting/core/utils/app_config.dart';
+import 'package:evoting/features/election/domain/entities/candidate_response.dart';
 import 'package:evoting/features/election/domain/entities/election_response.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:uuid/uuid.dart';
@@ -22,12 +23,11 @@ class ElectionBloc extends Bloc<ElectionEvent, ElectionState> {
   Stream<ElectionState> mapEventToState(
     ElectionEvent event,
   ) async* {
+    final DeployedContract contract =
+        await AppConfig.contract.then((value) => value);
     if (event is GetAllElection) {
       List<ElectionResponse> electionList = [];
       yield ElectionLoading();
-
-      final DeployedContract contract =
-          await AppConfig.contract.then((value) => value);
 
       final getElectionCount = contract.function('nextElectionId');
       final getElection = contract.function('getAnElection');
@@ -68,6 +68,17 @@ class ElectionBloc extends Bloc<ElectionEvent, ElectionState> {
         imageName = 'blockvote.png';
       }
 
+      for (var i = 0; i < event.candidates.length; i++) {
+        CandidateResponse candidate = event.candidates[i];
+        await AppConfig.runTransaction(
+            functionName: 'addCandidate',
+            parameter: [
+              candidate.candidateId,
+              candidate.candidateName,
+              candidate.candidateImage
+            ]).then((value) => print("Candidate : $value"));
+      }
+
       final EthereumAddress userPublicKey = await AppConfig.loggedInUserKey;
 
       final bool response = await AppConfig.runTransaction(
@@ -80,7 +91,7 @@ class ElectionBloc extends Bloc<ElectionEvent, ElectionState> {
             BigInt.from(event.startDate.millisecondsSinceEpoch),
             BigInt.from(event.endDate.millisecondsSinceEpoch),
             event.isActive,
-            event.candidates,
+            event.candidates.map((candidate) => candidate.candidateId).toList(),
             imageName
           ]);
 

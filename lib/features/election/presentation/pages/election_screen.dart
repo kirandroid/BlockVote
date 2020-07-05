@@ -12,6 +12,7 @@ import 'package:evoting/features/election/domain/entities/election_response.dart
 import 'package:evoting/features/election/presentation/bloc/election_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:web3dart/web3dart.dart';
 
 class ElectionScreen extends StatefulWidget {
   @override
@@ -92,25 +93,42 @@ class _ElectionScreenState extends State<ElectionScreen> {
                                     EdgeInsets.only(bottom: UISize.width(14)),
                                 child: Card(
                                   child: InkWell(
-                                    onTap: () {
-                                      election.hasPassword
-                                          ? CustomDialog(
-                                              context: context,
-                                              title: "Password Required!",
-                                              customWidget: passwordTextField(),
-                                              buttonTitle: "Okay",
-                                              customSecondButton: false,
-                                              onPressed: () {
-                                                _passwordController
-                                                        .text.isNotEmpty
-                                                    ? checkPassword(
-                                                        electionPassword:
-                                                            election.password)
-                                                    : null;
-                                              })
-                                          : ExtendedNavigator.of(context)
-                                              .pushNamed(
-                                                  Routes.electionDetailScreen);
+                                    onTap: () async {
+                                      final EthereumAddress loggedInUserKey =
+                                          await AppConfig.loggedInUserKey;
+                                      if (election.creatorId ==
+                                          loggedInUserKey) {
+                                        ExtendedNavigator.of(context).pushNamed(
+                                            Routes.electionDetailScreen,
+                                            arguments:
+                                                ElectionDetailScreenArguments(
+                                                    electionId:
+                                                        election.electionId));
+                                      } else {
+                                        election.hasPassword
+                                            ? CustomDialog(
+                                                context: context,
+                                                title: "Password Required!",
+                                                customWidget:
+                                                    passwordTextField(),
+                                                buttonTitle: "Okay",
+                                                customSecondButton: false,
+                                                onPressed: () {
+                                                  _passwordController
+                                                          .text.isNotEmpty
+                                                      ? checkPassword(
+                                                          electionPassword:
+                                                              election.password)
+                                                      : null;
+                                                })
+                                            : ExtendedNavigator.of(context)
+                                                .pushNamed(
+                                                    Routes.electionDetailScreen,
+                                                    arguments:
+                                                        ElectionDetailScreenArguments(
+                                                            electionId: election
+                                                                .electionId));
+                                      }
                                     },
                                     child: Column(
                                       crossAxisAlignment:
@@ -177,7 +195,10 @@ class _ElectionScreenState extends State<ElectionScreen> {
                                                 : Container()
                                           ],
                                         ),
-                                        Text("data")
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text(election.electionName),
+                                        )
                                       ],
                                     ),
                                   ),

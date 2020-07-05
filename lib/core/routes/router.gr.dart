@@ -53,6 +53,7 @@ class Router extends RouterBase {
 
   @override
   Route<dynamic> onGenerateRoute(RouteSettings settings) {
+    final args = settings.arguments;
     switch (settings.name) {
       case Routes.exitConfirmScreen:
         return MaterialPageRoute<dynamic>(
@@ -96,9 +97,14 @@ class Router extends RouterBase {
           transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
         );
       case Routes.electionDetailScreen:
+        if (hasInvalidArgs<ElectionDetailScreenArguments>(args,
+            isRequired: true)) {
+          return misTypedArgsRoute<ElectionDetailScreenArguments>(args);
+        }
+        final typedArgs = args as ElectionDetailScreenArguments;
         return PageRouteBuilder<dynamic>(
           pageBuilder: (context, animation, secondaryAnimation) =>
-              ElectionDetailScreen(),
+              ElectionDetailScreen(electionId: typedArgs.electionId),
           settings: settings,
           transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
         );
@@ -106,4 +112,14 @@ class Router extends RouterBase {
         return unknownRoutePage(settings.name);
     }
   }
+}
+
+// *************************************************************************
+// Arguments holder classes
+// **************************************************************************
+
+//ElectionDetailScreen arguments holder class
+class ElectionDetailScreenArguments {
+  final BigInt electionId;
+  ElectionDetailScreenArguments({@required this.electionId});
 }

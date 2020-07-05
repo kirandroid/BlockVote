@@ -60,8 +60,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         AuthState stateFromLogin = await _checkLoginState(
             context: event.context, publicKey: publicKey, contract: contract);
         if (stateFromLogin is AuthCompleted) {
-          addressService.setupFromMnemonic(event.seedPhrase);
+          await addressService.setupFromMnemonic(event.seedPhrase);
           yield stateFromLogin;
+          ExtendedNavigator.of(event.context)
+              .pushReplacementNamed(Routes.indexScreen);
         } else {
           yield stateFromLogin;
         }
@@ -71,8 +73,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         AuthState stateFromLogin = await _checkLoginState(
             context: event.context, publicKey: publicKey, contract: contract);
         if (stateFromLogin is AuthCompleted) {
-          addressService.setupFromPrivateKey(event.privateKey);
+          await addressService.setupFromPrivateKey(event.privateKey);
           yield stateFromLogin;
+          ExtendedNavigator.of(event.context)
+              .pushReplacementNamed(Routes.indexScreen);
         } else {
           yield stateFromLogin;
         }
@@ -97,7 +101,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           context: context, message: "Error while login!", title: "Error!");
       return AuthError();
     } else {
-      ExtendedNavigator.of(context).pushReplacementNamed(Routes.indexScreen);
       print("Success");
       return AuthCompleted();
     }
