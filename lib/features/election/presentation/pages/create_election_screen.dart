@@ -19,7 +19,7 @@ class CreateElectionScreen extends StatefulWidget {
 class _CreateElectionScreenState extends State<CreateElectionScreen> {
   File electionCover;
   bool hasPassword = false;
-  ElectionBloc _electionBloc;
+  ElectionBloc _electionBloc = sl<ElectionBloc>();
 
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now().add(const Duration(days: 5));
@@ -32,12 +32,6 @@ class _CreateElectionScreenState extends State<CreateElectionScreen> {
   TextEditingController electionNameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController candidateController = TextEditingController();
-
-  @override
-  void initState() {
-    _electionBloc = sl<ElectionBloc>();
-    super.initState();
-  }
 
   @override
   void dispose() {

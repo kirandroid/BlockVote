@@ -52,19 +52,22 @@ class ElectionBloc extends Bloc<ElectionEvent, ElectionState> {
       }
     } else if (event is CreateElection) {
       yield ElectionLoading();
-      var uuid = new Uuid();
-      String imageName = uuid.v4();
-      StorageReference storageReference =
-          FirebaseStorage.instance.ref().child("ElectionCover/$imageName");
+      String imageName = '';
+      if (event.image != null) {
+        var uuid = new Uuid();
+        imageName = uuid.v4();
+        StorageReference storageReference =
+            FirebaseStorage.instance.ref().child("ElectionCover/$imageName");
 
-      final StorageUploadTask uploadTask =
-          storageReference.putFile(event.image);
-      final StorageTaskSnapshot downloadUrl = (await uploadTask.onComplete);
-      final String url = (await downloadUrl.ref.getDownloadURL());
-      print(url);
+        final StorageUploadTask uploadTask =
+            storageReference.putFile(event.image);
+        final StorageTaskSnapshot downloadUrl = (await uploadTask.onComplete);
+        final String url = (await downloadUrl.ref.getDownloadURL());
+        print(url);
+      } else {
+        imageName = 'blockvote.png';
+      }
 
-      List<int> bytes = utf8.encode(event.electionPassword);
-      Digest hashedpassword = sha1.convert(bytes);
       final EthereumAddress userPublicKey = await AppConfig.loggedInUserKey;
 
       final bool response = await AppConfig.runTransaction(
@@ -72,7 +75,7 @@ class ElectionBloc extends Bloc<ElectionEvent, ElectionState> {
           parameter: [
             event.electionName,
             userPublicKey,
-            hashedpassword.toString(),
+            AppConfig().hashPassword(password: event.electionPassword),
             event.hasPassword,
             BigInt.from(event.startDate.millisecondsSinceEpoch),
             BigInt.from(event.endDate.millisecondsSinceEpoch),

@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:evoting/core/routes/router.gr.dart';
 import 'package:evoting/core/service/address_service.dart';
 import 'package:evoting/core/service/configuration_service.dart';
 import 'package:evoting/core/utils/contract_parser.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:http/http.dart';
+import 'package:crypto/crypto.dart';
 
 class AppConfig {
   final String relayWallet =
@@ -12,6 +15,16 @@ class AppConfig {
   final String contractAddress = "0x8d3A5b3B1A2db8FC6D0288054c7b3Fc4d1a6cd83";
   // final String apiUrl =
   //     "https://ropsten.infura.io/v3/759c8e94cb37497a9218009e21542fb7";
+
+  String imageUrlFormat({String imageName, String folderName}) {
+    return "https://firebasestorage.googleapis.com/v0/b/blockvote05.appspot.com/o/$folderName%2F$imageName?alt=media";
+  }
+
+  String hashPassword({String password}) {
+    List<int> bytes = utf8.encode(password);
+    Digest hashedpassword = sha1.convert(bytes);
+    return hashedpassword.toString();
+  }
 
   static Future<Credentials> get txnCredential async {
     return await AppConfig()

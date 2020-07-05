@@ -15,6 +15,7 @@ import 'package:evoting/features/authentication/presentation/pages/register_comp
 import 'package:evoting/features/indexScreen/index_screen.dart';
 import 'package:evoting/core/routes/route_guards.dart';
 import 'package:evoting/features/election/presentation/pages/create_election_screen.dart';
+import 'package:evoting/features/election/presentation/pages/election_detail_screen.dart';
 
 abstract class Routes {
   static const exitConfirmScreen = '/';
@@ -24,6 +25,7 @@ abstract class Routes {
   static const registerCompleteScreen = '/register-complete-screen';
   static const indexScreen = '/index-screen';
   static const createElectionScreen = '/create-election-screen';
+  static const electionDetailScreen = '/election-detail-screen';
   static const all = {
     exitConfirmScreen,
     getStartedScreen,
@@ -32,6 +34,7 @@ abstract class Routes {
     registerCompleteScreen,
     indexScreen,
     createElectionScreen,
+    electionDetailScreen,
   };
 }
 
@@ -42,6 +45,7 @@ class Router extends RouterBase {
   Map<String, List<Type>> get guardedRoutes => {
         Routes.indexScreen: [AuthGuard],
         Routes.createElectionScreen: [AuthGuard],
+        Routes.electionDetailScreen: [AuthGuard],
       };
   @Deprecated('call ExtendedNavigator.ofRouter<Router>() directly')
   static ExtendedNavigatorState get navigator =>
@@ -88,6 +92,13 @@ class Router extends RouterBase {
         return PageRouteBuilder<dynamic>(
           pageBuilder: (context, animation, secondaryAnimation) =>
               CreateElectionScreen(),
+          settings: settings,
+          transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
+        );
+      case Routes.electionDetailScreen:
+        return PageRouteBuilder<dynamic>(
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              ElectionDetailScreen(),
           settings: settings,
           transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
         );
