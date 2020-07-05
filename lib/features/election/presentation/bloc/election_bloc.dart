@@ -1,11 +1,16 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:evoting/core/utils/app_config.dart';
 import 'package:evoting/features/election/domain/entities/election_response.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:uuid/uuid.dart';
 import 'package:web3dart/web3dart.dart';
 
+import 'package:crypto/crypto.dart';
 part 'election_event.dart';
 part 'election_state.dart';
 
@@ -44,6 +49,43 @@ class ElectionBloc extends Bloc<ElectionEvent, ElectionState> {
         yield ElectionCompleted(allElection: electionList);
       } else {
         yield ElectionError(errorMessage: "No Elections Found!");
+      }
+    } else if (event is CreateElection) {
+      yield ElectionLoading();
+      var uuid = new Uuid();
+      String imageName = uuid.v4();
+      StorageReference storageReference =
+          FirebaseStorage.instance.ref().child("ElectionCover/$imageName");
+
+      final StorageUploadTask uploadTask =
+          storageReference.putFile(event.image);
+      final StorageTaskSnapshot downloadUrl = (await uploadTask.onComplete);
+      final String url = (await downloadUrl.ref.getDownloadURL());
+      print(url);
+
+      List<int> bytes = utf8.encode(event.electionPassword);
+      Digest hashedpassword = sha1.convert(bytes);
+      final EthereumAddress userPublicKey = await AppConfig.loggedInUserKey;
+
+      final bool response = await AppConfig.runTransaction(
+          functionName: 'createElection',
+          parameter: [
+            event.electionName,
+            userPublicKey,
+            hashedpassword.toString(),
+            event.hasPassword,
+            BigInt.from(event.startDate.millisecondsSinceEpoch),
+            BigInt.from(event.endDate.millisecondsSinceEpoch),
+            event.isActive,
+            event.candidates,
+            imageName
+          ]);
+
+      if (response) {
+        yield CreateElectionCompleted();
+      } else {
+        yield ElectionError(
+            errorMessage: "Some error occurred while creating election!");
       }
     }
   }

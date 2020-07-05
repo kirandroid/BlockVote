@@ -9,7 +9,7 @@ class AppConfig {
   final String relayWallet =
       "b8277c118e2d1ee3ffbf94ed42bc158f144d863aa72d83ba9dc58e70334d2a3c";
   final String apiUrl = "http://192.168.1.13:8545";
-  final String contractAddress = "0xe443Ab7c529267C94f501ba1D000364eF9d9EEc0";
+  final String contractAddress = "0x8d3A5b3B1A2db8FC6D0288054c7b3Fc4d1a6cd83";
   // final String apiUrl =
   //     "https://ropsten.infura.io/v3/759c8e94cb37497a9218009e21542fb7";
 
@@ -46,6 +46,7 @@ class AppConfig {
           .sendTransaction(
               credentials,
               Transaction.callContract(
+                  maxGas: 10000000,
                   contract: deployedContract,
                   function: function,
                   parameters: parameter,
@@ -86,5 +87,15 @@ class AppConfig {
     final ConfigurationService configurationService = ConfigurationService();
     final bool isLoggedIn = await configurationService.didSetupWallet();
     return isLoggedIn ? Routes.indexScreen : Routes.getStartedScreen;
+  }
+
+  static Future<EthereumAddress> get loggedInUserKey async {
+    final ConfigurationService configurationService = ConfigurationService();
+
+    final String privateKey = await configurationService.getPrivateKey();
+    final EthereumAddress publicKey =
+        await AppConfig.publicKeyFromPrivate(privateKey: privateKey);
+
+    return publicKey;
   }
 }

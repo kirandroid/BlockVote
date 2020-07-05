@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:evoting/core/routes/route_guards.dart';
 import 'package:evoting/core/routes/router.gr.dart';
 import 'package:evoting/core/utils/app_config.dart';
+import 'package:evoting/di.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive/hive.dart';
@@ -9,6 +10,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await initDI();
   await Hive.initFlutter();
 
   // Create storage

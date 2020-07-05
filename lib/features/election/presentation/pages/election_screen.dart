@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:evoting/core/routes/router.gr.dart';
+import 'package:evoting/di.dart';
 import 'package:evoting/features/election/presentation/bloc/election_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,9 +11,10 @@ class ElectionScreen extends StatefulWidget {
 }
 
 class _ElectionScreenState extends State<ElectionScreen> {
-  ElectionBloc _electionBloc = ElectionBloc();
+  ElectionBloc _electionBloc;
   @override
   void initState() {
+    _electionBloc = sl<ElectionBloc>();
     getAllElection();
     super.initState();
   }
