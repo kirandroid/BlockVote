@@ -118,7 +118,9 @@ class _ElectionScreenState extends State<ElectionScreen> {
                                                           .text.isNotEmpty
                                                       ? checkPassword(
                                                           electionPassword:
-                                                              election.password)
+                                                              election.password,
+                                                          electionId: election
+                                                              .electionId)
                                                       : null;
                                                 })
                                             : ExtendedNavigator.of(context)
@@ -237,13 +239,14 @@ class _ElectionScreenState extends State<ElectionScreen> {
     );
   }
 
-  void checkPassword({String electionPassword}) {
+  void checkPassword({String electionPassword, BigInt electionId}) {
     String hashedPassword =
         AppConfig().hashPassword(password: _passwordController.text);
     if (hashedPassword == electionPassword) {
       _passwordController.clear();
       Navigator.of(context).pop();
-      ExtendedNavigator.of(context).pushNamed(Routes.electionDetailScreen);
+      ExtendedNavigator.of(context).pushNamed(Routes.electionDetailScreen,
+          arguments: ElectionDetailScreenArguments(electionId: electionId));
     } else {
       _passwordController.clear();
       CustomDialog(

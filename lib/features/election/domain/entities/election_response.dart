@@ -11,6 +11,7 @@ class ElectionResponse {
   final bool isActive;
   final List<dynamic> candidates;
   final String electionCover;
+  final List<dynamic> voter;
 
   ElectionResponse(
       {this.electionId,
@@ -22,7 +23,8 @@ class ElectionResponse {
       this.endDate,
       this.isActive,
       this.candidates,
-      this.electionCover});
+      this.electionCover,
+      this.voter});
 
   ElectionResponse.fromMap(List data)
       : electionId = data.first[0],
@@ -34,5 +36,6 @@ class ElectionResponse {
         endDate = data.first[6],
         isActive = data.first[7],
         candidates = data.first[8],
-        electionCover = data.first[9];
+        electionCover = data.first[9],
+        voter = data.first[10];
 }

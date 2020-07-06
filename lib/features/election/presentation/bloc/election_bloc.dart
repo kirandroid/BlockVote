@@ -53,6 +53,7 @@ class ElectionBloc extends Bloc<ElectionEvent, ElectionState> {
     } else if (event is CreateElection) {
       yield ElectionLoading();
       String imageName = '';
+      List<EthereumAddress> voter = [];
       if (event.image != null) {
         var uuid = new Uuid();
         imageName = uuid.v4();
@@ -92,7 +93,8 @@ class ElectionBloc extends Bloc<ElectionEvent, ElectionState> {
             BigInt.from(event.endDate.millisecondsSinceEpoch),
             event.isActive,
             event.candidates.map((candidate) => candidate.candidateId).toList(),
-            imageName
+            imageName,
+            voter
           ]);
 
       if (response) {

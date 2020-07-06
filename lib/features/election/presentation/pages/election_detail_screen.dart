@@ -14,6 +14,9 @@ class ElectionDetailScreen extends StatefulWidget {
 
 class _ElectionDetailScreenState extends State<ElectionDetailScreen> {
   List<CandidateResponse> candidatesList = [];
+  List<dynamic> voter = [];
+  EthereumAddress loggedInUser;
+  ElectionResponse election = ElectionResponse();
   @override
   void initState() {
     getElectionDetail();
@@ -21,6 +24,7 @@ class _ElectionDetailScreenState extends State<ElectionDetailScreen> {
   }
 
   void getElectionDetail() async {
+    final EthereumAddress loggedInUserKey = await AppConfig.loggedInUserKey;
     final DeployedContract contract =
         await AppConfig.contract.then((value) => value);
     final getAnElection = contract.function('getAnElection');
@@ -31,6 +35,11 @@ class _ElectionDetailScreenState extends State<ElectionDetailScreen> {
             contract: contract,
             function: getAnElection,
             params: [widget.electionId]));
+    setState(() {
+      loggedInUser = loggedInUserKey;
+      voter = electionResponse.voter;
+      election = electionResponse;
+    });
 
     for (var i = 0; i < electionResponse.candidates.length; i++) {
       String candidateId = electionResponse.candidates[i];
@@ -48,25 +57,61 @@ class _ElectionDetailScreenState extends State<ElectionDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: ListView.builder(
-          itemCount: candidatesList.length,
-          itemBuilder: (context, index) {
-            if (candidatesList.isEmpty) {
-              return Center(child: CircularProgressIndicator());
-            } else {
-              return ListTile(
-                title: Text(candidatesList[index].candidateName),
-                leading: Image.network(
-                  AppConfig().imageUrlFormat(
-                      folderName: "ElectionCover",
-                      imageName: candidatesList[index].candidateImage),
-                  height: 100,
-                  width: 100,
-                ),
-              );
-            }
-          }),
+      appBar: AppBar(
+        title: loggedInUser == election.creatorId
+            ? Container()
+            : FlatButton(
+                onPressed: () async {
+                  final bool response = await AppConfig.runTransaction(
+                      functionName: 'joinElection',
+                      parameter: [election.electionId, loggedInUser]);
+                  if (response) {
+                    getElectionDetail();
+                  } else {
+                    print("Error");
+                  }
+                },
+                child: Text("Join")),
+      ),
+      body: Column(
+        children: [
+          Flexible(
+            flex: 1,
+            child: ListView.builder(
+                itemCount: voter.length,
+                itemBuilder: (context, index) {
+                  if (voter.isEmpty) {
+                    return Center(child: CircularProgressIndicator());
+                  } else {
+                    return ListTile(
+                      title: Text(voter[index].toString()),
+                    );
+                  }
+                }),
+          ),
+          Flexible(
+            flex: 1,
+            child: ListView.builder(
+                itemCount: candidatesList.length,
+                itemBuilder: (context, index) {
+                  if (candidatesList.isEmpty) {
+                    return Center(child: CircularProgressIndicator());
+                  } else {
+                    return ListTile(
+                      title: Text(candidatesList[index].candidateName),
+                      leading: Image.network(
+                        AppConfig().imageUrlFormat(
+                            folderName: "ElectionCover",
+                            imageName: candidatesList[index].candidateImage),
+                        height: 100,
+                        width: 100,
+                      ),
+                    );
+                  }
+                }),
+          ),
+        ],
+      ),
     );
   }
 }

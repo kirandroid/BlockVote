@@ -10,6 +10,7 @@ abstract class IConfigurationService {
   Future<String> getMnemonic();
   Future<String> getPrivateKey();
   Future<bool> didSetupWallet();
+  Future<bool> clearDB();
 }
 
 class ConfigurationService implements IConfigurationService {
@@ -78,5 +79,24 @@ class ConfigurationService implements IConfigurationService {
     var encryptedBox =
         await Hive.openBox('vaultBox', encryptionKey: encryptionKeyList);
     return encryptedBox.get('didSetupWallet') ?? false;
+  }
+
+  @override
+  Future<bool> clearDB() async {
+    bool hasClearedDB = false;
+    String encryptionKey = await storage.read(key: "encryptedBoxKey");
+    List<int> encryptionKeyList =
+        (jsonDecode(encryptionKey) as List<dynamic>).cast<int>();
+
+    var encryptedBox =
+        await Hive.openBox('vaultBox', encryptionKey: encryptionKeyList);
+
+    await encryptedBox.deleteFromDisk().then((value) {
+      hasClearedDB = true;
+    }).catchError((onError) {
+      print(onError);
+      hasClearedDB = false;
+    });
+    return hasClearedDB;
   }
 }
