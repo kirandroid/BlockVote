@@ -26,6 +26,15 @@ class CreateElectionCompleted extends ElectionState {
   List<Object> get props => [];
 }
 
+class FetchAnElectionCompleted extends ElectionState {
+  final ElectionResponse election;
+  final List<CandidateResponse> candidates;
+  FetchAnElectionCompleted({this.election, this.candidates});
+
+  @override
+  List<Object> get props => [this.election, this.candidates];
+}
+
 class ElectionError extends ElectionState {
   final String errorMessage;
   ElectionError({this.errorMessage});

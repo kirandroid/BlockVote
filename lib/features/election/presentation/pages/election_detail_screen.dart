@@ -1,7 +1,10 @@
 import 'package:evoting/core/utils/app_config.dart';
+import 'package:evoting/di.dart';
 import 'package:evoting/features/election/domain/entities/candidate_response.dart';
 import 'package:evoting/features/election/domain/entities/election_response.dart';
+import 'package:evoting/features/election/presentation/bloc/election_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:web3dart/web3dart.dart';
 
 class ElectionDetailScreen extends StatefulWidget {
@@ -13,105 +16,102 @@ class ElectionDetailScreen extends StatefulWidget {
 }
 
 class _ElectionDetailScreenState extends State<ElectionDetailScreen> {
-  List<CandidateResponse> candidatesList = [];
-  List<dynamic> voter = [];
   EthereumAddress loggedInUser;
-  ElectionResponse election = ElectionResponse();
+  ElectionBloc _electionBloc = sl<ElectionBloc>();
   @override
   void initState() {
-    getElectionDetail();
+    getAnElection();
+    getLoggedInUser();
     super.initState();
   }
 
-  void getElectionDetail() async {
+  void getLoggedInUser() async {
     final EthereumAddress loggedInUserKey = await AppConfig.loggedInUserKey;
-    final DeployedContract contract =
-        await AppConfig.contract.then((value) => value);
-    final getAnElection = contract.function('getAnElection');
-    final getCandidate = contract.function('getCandidate');
-
-    ElectionResponse electionResponse = ElectionResponse.fromMap(
-        await AppConfig().ethClient().call(
-            contract: contract,
-            function: getAnElection,
-            params: [widget.electionId]));
     setState(() {
       loggedInUser = loggedInUserKey;
-      voter = electionResponse.voter;
-      election = electionResponse;
     });
+  }
 
-    for (var i = 0; i < electionResponse.candidates.length; i++) {
-      String candidateId = electionResponse.candidates[i];
-      CandidateResponse candidateResponse = CandidateResponse.fromMap(
-          await AppConfig().ethClient().call(
-              contract: contract,
-              function: getCandidate,
-              params: [candidateId]));
-      setState(() {
-        candidatesList.add(candidateResponse);
-      });
-    }
+  void getAnElection() {
+    _electionBloc.add(FetchAnElection(electionId: widget.electionId));
+  }
+
+  @mustCallSuper
+  void dispose() async {
+    super.dispose();
+    await _electionBloc.drain();
+    _electionBloc.close();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: loggedInUser == election.creatorId
-            ? Container()
-            : FlatButton(
-                onPressed: () async {
-                  final bool response = await AppConfig.runTransaction(
-                      functionName: 'joinElection',
-                      parameter: [election.electionId, loggedInUser]);
-                  if (response) {
-                    getElectionDetail();
-                  } else {
-                    print("Error");
-                  }
-                },
-                child: Text("Join")),
-      ),
-      body: Column(
-        children: [
-          Flexible(
-            flex: 1,
-            child: ListView.builder(
-                itemCount: voter.length,
-                itemBuilder: (context, index) {
-                  if (voter.isEmpty) {
-                    return Center(child: CircularProgressIndicator());
-                  } else {
-                    return ListTile(
-                      title: Text(voter[index].toString()),
-                    );
-                  }
-                }),
-          ),
-          Flexible(
-            flex: 1,
-            child: ListView.builder(
-                itemCount: candidatesList.length,
-                itemBuilder: (context, index) {
-                  if (candidatesList.isEmpty) {
-                    return Center(child: CircularProgressIndicator());
-                  } else {
-                    return ListTile(
-                      title: Text(candidatesList[index].candidateName),
-                      leading: Image.network(
-                        AppConfig().imageUrlFormat(
-                            folderName: "ElectionCover",
-                            imageName: candidatesList[index].candidateImage),
-                        height: 100,
-                        width: 100,
-                      ),
-                    );
-                  }
-                }),
-          ),
-        ],
-      ),
-    );
+        body: BlocBuilder<ElectionBloc, ElectionState>(
+            bloc: this._electionBloc,
+            builder: (BuildContext context, ElectionState state) {
+              if (state is ElectionLoading) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (state is FetchAnElectionCompleted) {
+                return Column(
+                  children: [
+                    loggedInUser == state.election.creatorId
+                        ? Container()
+                        : FlatButton(
+                            onPressed: () {
+                              _electionBloc.add(JoinAnElection(
+                                  context: context,
+                                  electionId: state.election.electionId,
+                                  loggedInUser: loggedInUser,
+                                  voterList: state.election.voter));
+                            },
+                            child: Text("Join")),
+                    Flexible(
+                      flex: 1,
+                      child: ListView.builder(
+                          itemCount: state.election.voter.length,
+                          itemBuilder: (context, index) {
+                            EthereumAddress voter = state.election.voter[index];
+                            if (state.election.voter.isEmpty) {
+                              return Center(child: CircularProgressIndicator());
+                            } else {
+                              return ListTile(
+                                title: Text(voter.toString()),
+                              );
+                            }
+                          }),
+                    ),
+                    Flexible(
+                      flex: 1,
+                      child: ListView.builder(
+                          itemCount: state.candidates.length,
+                          itemBuilder: (context, index) {
+                            CandidateResponse candidatesList =
+                                state.candidates[index];
+                            if (state.candidates.isEmpty) {
+                              return Center(child: CircularProgressIndicator());
+                            } else {
+                              return ListTile(
+                                title: Text(candidatesList.candidateName),
+                                leading: Image.network(
+                                  AppConfig().imageUrlFormat(
+                                      folderName: "ElectionCover",
+                                      imageName: candidatesList.candidateImage),
+                                  height: 100,
+                                  width: 100,
+                                ),
+                              );
+                            }
+                          }),
+                    ),
+                  ],
+                );
+              } else {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+            }));
   }
 }

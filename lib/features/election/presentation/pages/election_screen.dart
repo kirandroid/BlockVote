@@ -31,7 +31,7 @@ class _ElectionScreenState extends State<ElectionScreen> {
   }
 
   void getAllElection() async {
-    _electionBloc.add(GetAllElection());
+    sl<ElectionBloc>().add(GetAllElection());
   }
 
   @mustCallSuper
@@ -98,6 +98,14 @@ class _ElectionScreenState extends State<ElectionScreen> {
                                           await AppConfig.loggedInUserKey;
                                       if (election.creatorId ==
                                           loggedInUserKey) {
+                                        ExtendedNavigator.of(context).pushNamed(
+                                            Routes.electionDetailScreen,
+                                            arguments:
+                                                ElectionDetailScreenArguments(
+                                                    electionId:
+                                                        election.electionId));
+                                      } else if (election.voter
+                                          .contains(loggedInUserKey)) {
                                         ExtendedNavigator.of(context).pushNamed(
                                             Routes.electionDetailScreen,
                                             arguments:
