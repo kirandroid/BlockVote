@@ -45,73 +45,87 @@ class _ElectionDetailScreenState extends State<ElectionDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: BlocBuilder<ElectionBloc, ElectionState>(
-            bloc: this._electionBloc,
-            builder: (BuildContext context, ElectionState state) {
-              if (state is ElectionLoading) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else if (state is FetchAnElectionCompleted) {
-                return Column(
-                  children: [
-                    loggedInUser == state.election.creatorId
-                        ? Container()
-                        : FlatButton(
-                            onPressed: () {
-                              _electionBloc.add(JoinAnElection(
-                                  context: context,
-                                  electionId: state.election.electionId,
-                                  loggedInUser: loggedInUser,
-                                  voterList: state.election.voter));
-                            },
-                            child: Text("Join")),
-                    Flexible(
-                      flex: 1,
-                      child: ListView.builder(
-                          itemCount: state.election.voter.length,
-                          itemBuilder: (context, index) {
-                            EthereumAddress voter = state.election.voter[index];
-                            if (state.election.voter.isEmpty) {
-                              return Center(child: CircularProgressIndicator());
-                            } else {
-                              return ListTile(
-                                title: Text(voter.toString()),
-                              );
-                            }
-                          }),
-                    ),
-                    Flexible(
-                      flex: 1,
-                      child: ListView.builder(
-                          itemCount: state.candidates.length,
-                          itemBuilder: (context, index) {
-                            CandidateResponse candidatesList =
-                                state.candidates[index];
-                            if (state.candidates.isEmpty) {
-                              return Center(child: CircularProgressIndicator());
-                            } else {
-                              return ListTile(
-                                title: Text(candidatesList.candidateName),
-                                leading: Image.network(
-                                  AppConfig().imageUrlFormat(
-                                      folderName: "ElectionCover",
-                                      imageName: candidatesList.candidateImage),
-                                  height: 100,
-                                  width: 100,
-                                ),
-                              );
-                            }
-                          }),
-                    ),
-                  ],
-                );
-              } else {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-            }));
+    return WillPopScope(
+      onWillPop: () {
+        sl<ElectionBloc>().add(GetAllElection());
+        Navigator.pop(context);
+      },
+      child: Scaffold(
+          body: BlocBuilder<ElectionBloc, ElectionState>(
+              bloc: this._electionBloc,
+              builder: (BuildContext context, ElectionState state) {
+                if (state is FetchElectionLoading) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (state is FetchAnElectionCompleted) {
+                  return Column(
+                    children: [
+                      loggedInUser == state.election.creatorId
+                          ? Container()
+                          : FlatButton(
+                              onPressed: () {
+                                _electionBloc.add(JoinAnElection(
+                                    context: context,
+                                    electionId: state.election.electionId,
+                                    loggedInUser: loggedInUser,
+                                    voterList: state.election.voter));
+                              },
+                              child: Text("Join")),
+                      Flexible(
+                        flex: 1,
+                        child: ListView.builder(
+                            itemCount: state.election.voter.length,
+                            itemBuilder: (context, index) {
+                              EthereumAddress voter =
+                                  state.election.voter[index];
+                              if (state.election.voter.isEmpty) {
+                                return Center(
+                                    child: CircularProgressIndicator());
+                              } else {
+                                return ListTile(
+                                  title: Text(voter.toString()),
+                                );
+                              }
+                            }),
+                      ),
+                      Flexible(
+                        flex: 1,
+                        child: ListView.builder(
+                            itemCount: state.candidates.length,
+                            itemBuilder: (context, index) {
+                              CandidateResponse candidatesList =
+                                  state.candidates[index];
+                              if (state.candidates.isEmpty) {
+                                return Center(
+                                    child: CircularProgressIndicator());
+                              } else {
+                                return ListTile(
+                                  title: Text(candidatesList.candidateName),
+                                  leading: Image.network(
+                                    AppConfig().imageUrlFormat(
+                                        folderName: "ElectionCover",
+                                        imageName:
+                                            candidatesList.candidateImage),
+                                    height: 100,
+                                    width: 100,
+                                  ),
+                                );
+                              }
+                            }),
+                      ),
+                    ],
+                  );
+                } else if (state is FetchElectionError) {
+                  return Center(
+                    child: Text(state.errorMessage),
+                  );
+                } else {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              })),
+    );
   }
 }

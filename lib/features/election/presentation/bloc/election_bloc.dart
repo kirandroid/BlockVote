@@ -55,7 +55,7 @@ class ElectionBloc extends Bloc<ElectionEvent, ElectionState> {
         yield ElectionError(errorMessage: "No Elections Found!");
       }
     } else if (event is CreateElection) {
-      yield ElectionLoading();
+      yield CreateElectionLoading();
       String imageName = '';
       List<EthereumAddress> voter = [];
       if (event.image != null) {
@@ -104,11 +104,11 @@ class ElectionBloc extends Bloc<ElectionEvent, ElectionState> {
       if (response) {
         yield CreateElectionCompleted();
       } else {
-        yield ElectionError(
+        yield CreateElectionError(
             errorMessage: "Some error occurred while creating election!");
       }
     } else if (event is FetchAnElection) {
-      yield ElectionLoading();
+      yield FetchElectionLoading();
       List<CandidateResponse> candidatesList = [];
 
       final getAnElection = contract.function('getAnElection');
@@ -132,7 +132,7 @@ class ElectionBloc extends Bloc<ElectionEvent, ElectionState> {
         yield FetchAnElectionCompleted(
             candidates: candidatesList, election: electionResponse);
       } catch (e) {
-        yield ElectionError(errorMessage: "Election may be deleted.");
+        yield FetchElectionError(errorMessage: "Election may be deleted.");
       }
     } else if (event is JoinAnElection) {
       if (event.voterList.contains(event.loggedInUser)) {
