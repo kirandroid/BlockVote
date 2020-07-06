@@ -202,13 +202,67 @@ class _ElectionScreenState extends State<ElectionScreen> {
                                                               .primaryWhite),
                                                     ),
                                                   )
-                                                : Container()
+                                                : Container(),
+                                            Positioned(
+                                              left: 8,
+                                              top: 8,
+                                              child: Container(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 5, vertical: 2),
+                                                child: Text(
+                                                  election.status.status,
+                                                  style: StyleText.ralewayBold
+                                                      .copyWith(
+                                                          letterSpacing: 1,
+                                                          color: UIColors
+                                                              .primaryWhite,
+                                                          fontSize:
+                                                              UISize.fontSize(
+                                                                  12)),
+                                                ),
+                                                decoration: BoxDecoration(
+                                                    color: election
+                                                        .status.statusColor,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5)),
+                                              ),
+                                            )
                                           ],
                                         ),
                                         Padding(
                                           padding: const EdgeInsets.all(8.0),
-                                          child: Text(election.electionName),
-                                        )
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(election.electionName),
+                                                  Text(
+                                                      "${election.formattedStartDate} - ${election.formattedEndDate}")
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                height: 5,
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                      "${election.candidates.length} Candidates"),
+                                                  Text(
+                                                      "Created by ${election.creatorName}"),
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),
