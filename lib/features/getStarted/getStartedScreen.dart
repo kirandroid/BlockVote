@@ -86,7 +86,10 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                                 height: ScreenUtil.screenHeight / 2,
                                 padding: EdgeInsets.all(30),
                                 width: ScreenUtil.screenHeight / 2,
-                                child: Icon(Icons.wallpaper)
+                                child: Icon(
+                                  Icons.sentiment_satisfied,
+                                  size: 100,
+                                )
                                 // Image.asset(
                                 //     walkthroughItems[info.index]["image"])
                                 ),

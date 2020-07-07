@@ -9,7 +9,7 @@ import 'package:evoting/core/widgets/custom_dialog.dart';
 import 'package:evoting/core/widgets/shimmerEffect.dart';
 import 'package:evoting/di.dart';
 import 'package:evoting/features/election/domain/entities/election_response.dart';
-import 'package:evoting/features/election/presentation/bloc/election_bloc.dart';
+import 'package:evoting/features/election/presentation/bloc/election_list_bloc/election_list_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:web3dart/web3dart.dart';
@@ -20,7 +20,7 @@ class ElectionScreen extends StatefulWidget {
 }
 
 class _ElectionScreenState extends State<ElectionScreen> {
-  ElectionBloc _electionBloc = sl<ElectionBloc>();
+  ElectionListBloc _electionBloc = sl<ElectionListBloc>();
   TextEditingController _passwordController = TextEditingController();
   bool _validPasswordField = true;
 
@@ -31,7 +31,7 @@ class _ElectionScreenState extends State<ElectionScreen> {
   }
 
   void getAllElection() async {
-    sl<ElectionBloc>().add(GetAllElection());
+    sl<ElectionListBloc>().add(GetAllElection());
   }
 
   @mustCallSuper
@@ -64,12 +64,12 @@ class _ElectionScreenState extends State<ElectionScreen> {
               height: 20,
             ),
             Expanded(
-              child: BlocProvider<ElectionBloc>(
-                create: (context) => ElectionBloc(),
-                child: BlocBuilder<ElectionBloc, ElectionState>(
+              child: BlocProvider<ElectionListBloc>(
+                create: (context) => ElectionListBloc(),
+                child: BlocBuilder<ElectionListBloc, ElectionListState>(
                     bloc: this._electionBloc,
-                    builder: (BuildContext context, ElectionState state) {
-                      if (state is ElectionLoading) {
+                    builder: (BuildContext context, ElectionListState state) {
+                      if (state is ElectionListLoading) {
                         return ListView.builder(
                             itemCount: 4,
                             itemBuilder: (context, index) {
@@ -81,7 +81,7 @@ class _ElectionScreenState extends State<ElectionScreen> {
                                 ),
                               );
                             });
-                      } else if (state is ElectionCompleted) {
+                      } else if (state is ElectionListCompleted) {
                         return ListView.builder(
                             physics: BouncingScrollPhysics(),
                             itemCount: state.allElection.length,

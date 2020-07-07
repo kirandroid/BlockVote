@@ -172,7 +172,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     onPressed: () {
                       Clipboard.setData(new ClipboardData(text: mnemonic));
                       Toast().showToast(
-                          context: context, message: "Menomic Copied!");
+                          bgColor: UIColors.primaryDarkTeal,
+                          context: context,
+                          message: "Menomic Copied!");
                     },
                   ),
                 ),
@@ -195,8 +197,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     verticalPadding: UISize.width(16),
                     onPressed: () {
                       _authBloc.add(RegisterUser(
-                          firstName: firstNameController.text,
-                          lastName: lastNameController.text,
+                          firstName: firstNameController.text.trim(),
+                          lastName: lastNameController.text.trim(),
                           seedPhrase: mnemonic,
                           context: context));
                     },

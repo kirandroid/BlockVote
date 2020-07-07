@@ -1,7 +1,8 @@
 import 'dart:io';
 import 'package:evoting/di.dart';
 import 'package:evoting/features/election/domain/entities/candidate_response.dart';
-import 'package:evoting/features/election/presentation/bloc/election_bloc.dart';
+import 'package:evoting/features/election/presentation/bloc/create_election_bloc/create_election_bloc.dart';
+import 'package:evoting/features/election/presentation/bloc/election_list_bloc/election_list_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:auto_route/auto_route.dart';
@@ -21,7 +22,7 @@ class CreateElectionScreen extends StatefulWidget {
 class _CreateElectionScreenState extends State<CreateElectionScreen> {
   File electionCover;
   bool hasPassword = false;
-  ElectionBloc _electionBloc = sl<ElectionBloc>();
+  CreateElectionBloc _createElectionBloc = sl<CreateElectionBloc>();
 
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now().add(const Duration(days: 5));
@@ -37,8 +38,7 @@ class _CreateElectionScreenState extends State<CreateElectionScreen> {
 
   @override
   void dispose() {
-    _electionBloc.drain();
-    _electionBloc.close();
+    _createElectionBloc.close();
     super.dispose();
   }
 
@@ -72,14 +72,14 @@ class _CreateElectionScreenState extends State<CreateElectionScreen> {
           ),
         ),
         body: BlocConsumer(
-            bloc: this._electionBloc,
-            listener: (BuildContext context, ElectionState state) {
+            bloc: this._createElectionBloc,
+            listener: (BuildContext context, CreateElectionState state) {
               if (state is CreateElectionCompleted) {
-                _electionBloc.add(GetAllElection());
+                sl<ElectionListBloc>().add(GetAllElection());
                 ExtendedNavigator.of(context).pop();
               }
             },
-            builder: (BuildContext context, ElectionState state) {
+            builder: (BuildContext context, CreateElectionState state) {
               return SingleChildScrollView(
                 child: Padding(
                   padding: EdgeInsets.only(
@@ -260,8 +260,7 @@ class _CreateElectionScreenState extends State<CreateElectionScreen> {
           icon: Icon(Icons.cloud_upload),
           label: Text("Submit"),
           onPressed: () {
-            sl.reset();
-            _electionBloc.add(CreateElection(
+            _createElectionBloc.add(CreateElection(
                 electionName: electionNameController.text,
                 electionPassword: passwordController.text,
                 hasPassword: hasPassword,

@@ -309,20 +309,30 @@
   "ast": {
     "absolutePath": "/C/Projects/voting-DAPP/BlockVoteWeb/contracts/voting.sol",
     "exportedSymbols": {
-      "Voting": [332]
+      "Voting": [
+        332
+      ]
     },
     "id": 333,
     "nodeType": "SourceUnit",
     "nodes": [
       {
         "id": 38,
-        "literals": ["solidity", "^", "0.6", ".0"],
+        "literals": [
+          "solidity",
+          "^",
+          "0.6",
+          ".0"
+        ],
         "nodeType": "PragmaDirective",
         "src": "32:23:1"
       },
       {
         "id": 39,
-        "literals": ["experimental", "ABIEncoderV2"],
+        "literals": [
+          "experimental",
+          "ABIEncoderV2"
+        ],
         "nodeType": "PragmaDirective",
         "src": "57:33:1"
       },
@@ -334,7 +344,9 @@
         "documentation": null,
         "fullyImplemented": true,
         "id": 332,
-        "linearizedBaseContracts": [332],
+        "linearizedBaseContracts": [
+          332
+        ],
         "name": "Voting",
         "nodeType": "ContractDefinition",
         "nodes": [
@@ -1114,7 +1126,9 @@
               "src": "974:107:1",
               "statements": [
                 {
-                  "assignments": [106],
+                  "assignments": [
+                    106
+                  ],
                   "declarations": [
                     {
                       "constant": false,
@@ -1369,7 +1383,9 @@
               "src": "1238:232:1",
               "statements": [
                 {
-                  "assignments": [130],
+                  "assignments": [
+                    130
+                  ],
                   "declarations": [
                     {
                       "constant": false,
@@ -1888,7 +1904,9 @@
               "src": "1784:189:1",
               "statements": [
                 {
-                  "assignments": [176],
+                  "assignments": [
+                    176
+                  ],
                   "declarations": [
                     {
                       "constant": false,
@@ -2476,7 +2494,9 @@
               "src": "2442:600:1",
               "statements": [
                 {
-                  "assignments": [244],
+                  "assignments": [
+                    244
+                  ],
                   "declarations": [
                     {
                       "constant": false,
@@ -3739,20 +3759,30 @@
   "legacyAST": {
     "absolutePath": "/C/Projects/voting-DAPP/BlockVoteWeb/contracts/voting.sol",
     "exportedSymbols": {
-      "Voting": [332]
+      "Voting": [
+        332
+      ]
     },
     "id": 333,
     "nodeType": "SourceUnit",
     "nodes": [
       {
         "id": 38,
-        "literals": ["solidity", "^", "0.6", ".0"],
+        "literals": [
+          "solidity",
+          "^",
+          "0.6",
+          ".0"
+        ],
         "nodeType": "PragmaDirective",
         "src": "32:23:1"
       },
       {
         "id": 39,
-        "literals": ["experimental", "ABIEncoderV2"],
+        "literals": [
+          "experimental",
+          "ABIEncoderV2"
+        ],
         "nodeType": "PragmaDirective",
         "src": "57:33:1"
       },
@@ -3764,7 +3794,9 @@
         "documentation": null,
         "fullyImplemented": true,
         "id": 332,
-        "linearizedBaseContracts": [332],
+        "linearizedBaseContracts": [
+          332
+        ],
         "name": "Voting",
         "nodeType": "ContractDefinition",
         "nodes": [
@@ -4544,7 +4576,9 @@
               "src": "974:107:1",
               "statements": [
                 {
-                  "assignments": [106],
+                  "assignments": [
+                    106
+                  ],
                   "declarations": [
                     {
                       "constant": false,
@@ -4799,7 +4833,9 @@
               "src": "1238:232:1",
               "statements": [
                 {
-                  "assignments": [130],
+                  "assignments": [
+                    130
+                  ],
                   "declarations": [
                     {
                       "constant": false,
@@ -5318,7 +5354,9 @@
               "src": "1784:189:1",
               "statements": [
                 {
-                  "assignments": [176],
+                  "assignments": [
+                    176
+                  ],
                   "declarations": [
                     {
                       "constant": false,
@@ -5906,7 +5944,9 @@
               "src": "2442:600:1",
               "statements": [
                 {
-                  "assignments": [244],
+                  "assignments": [
+                    244
+                  ],
                   "declarations": [
                     {
                       "constant": false,
@@ -7174,12 +7214,12 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0x0bc8530fe0B058ad5BEaDCc633c74AA9E3f9eED4",
-      "transactionHash": "0xd3676f271421dc7eb65d2e49895a2fa7fa19bb3435d0e81cc12ab13c7aa1854a"
+      "address": "0x0a4D217296734e61fDC73051e697370EAE999034",
+      "transactionHash": "0x7ae3fad69a9ee2bc7e9543dd35f45a693301c649613630d7023cfa08f97de9a1"
     }
   },
   "schemaVersion": "3.2.0",
-  "updatedAt": "2020-07-06T09:31:41.962Z",
+  "updatedAt": "2020-07-07T16:49:45.654Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}
