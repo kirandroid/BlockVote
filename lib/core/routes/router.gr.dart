@@ -16,6 +16,7 @@ import 'package:evoting/features/indexScreen/index_screen.dart';
 import 'package:evoting/core/routes/route_guards.dart';
 import 'package:evoting/features/election/presentation/pages/create_election_screen.dart';
 import 'package:evoting/features/election/presentation/pages/election_detail_screen.dart';
+import 'package:evoting/features/election/presentation/pages/candidate_info_screen.dart';
 
 abstract class Routes {
   static const exitConfirmScreen = '/';
@@ -26,6 +27,7 @@ abstract class Routes {
   static const indexScreen = '/index-screen';
   static const createElectionScreen = '/create-election-screen';
   static const electionDetailScreen = '/election-detail-screen';
+  static const candidateInfoScreen = '/candidate-info-screen';
   static const all = {
     exitConfirmScreen,
     getStartedScreen,
@@ -35,6 +37,7 @@ abstract class Routes {
     indexScreen,
     createElectionScreen,
     electionDetailScreen,
+    candidateInfoScreen,
   };
 }
 
@@ -46,6 +49,7 @@ class Router extends RouterBase {
         Routes.indexScreen: [AuthGuard],
         Routes.createElectionScreen: [AuthGuard],
         Routes.electionDetailScreen: [AuthGuard],
+        Routes.candidateInfoScreen: [AuthGuard],
       };
   @Deprecated('call ExtendedNavigator.ofRouter<Router>() directly')
   static ExtendedNavigatorState get navigator =>
@@ -108,6 +112,18 @@ class Router extends RouterBase {
           settings: settings,
           transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
         );
+      case Routes.candidateInfoScreen:
+        if (hasInvalidArgs<CandidateInfoScreenArguments>(args,
+            isRequired: true)) {
+          return misTypedArgsRoute<CandidateInfoScreenArguments>(args);
+        }
+        final typedArgs = args as CandidateInfoScreenArguments;
+        return PageRouteBuilder<dynamic>(
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              CandidateInfoScreen(candidateId: typedArgs.candidateId),
+          settings: settings,
+          transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
+        );
       default:
         return unknownRoutePage(settings.name);
     }
@@ -122,4 +138,10 @@ class Router extends RouterBase {
 class ElectionDetailScreenArguments {
   final BigInt electionId;
   ElectionDetailScreenArguments({@required this.electionId});
+}
+
+//CandidateInfoScreen arguments holder class
+class CandidateInfoScreenArguments {
+  final String candidateId;
+  CandidateInfoScreenArguments({@required this.candidateId});
 }

@@ -4,6 +4,7 @@ import 'package:evoting/core/routes/route_guards.dart';
 import 'package:evoting/features/authentication/presentation/pages/loginScreen.dart';
 import 'package:evoting/features/authentication/presentation/pages/registerScreen.dart';
 import 'package:evoting/features/authentication/presentation/pages/register_complete_screen.dart';
+import 'package:evoting/features/election/presentation/pages/candidate_info_screen.dart';
 import 'package:evoting/features/election/presentation/pages/create_election_screen.dart';
 import 'package:evoting/features/election/presentation/pages/election_detail_screen.dart';
 import 'package:evoting/features/exitConfirm/exitConfirmScreen.dart';
@@ -40,4 +41,10 @@ class $Router {
     transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
   )
   ElectionDetailScreen electionDetailScreen;
+
+  @GuardedBy([AuthGuard])
+  @CustomRoute(
+    transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
+  )
+  CandidateInfoScreen candidateInfoScreen;
 }

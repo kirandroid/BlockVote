@@ -17,3 +17,11 @@ class JoinAnElection implements ElectionDetailEvent {
   JoinAnElection(
       {this.electionId, this.loggedInUser, this.context, this.voterList});
 }
+
+class VoteCandidate implements ElectionDetailEvent {
+  final EthereumAddress voterId;
+  final String candidateId;
+  final BigInt electionId;
+
+  VoteCandidate({this.voterId, this.candidateId, this.electionId});
+}

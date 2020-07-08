@@ -1,7 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:evoting/core/routes/router.gr.dart';
 import 'package:evoting/core/utils/app_config.dart';
 import 'package:evoting/core/utils/colors.dart';
 import 'package:evoting/core/utils/sizes.dart';
+import 'package:evoting/core/utils/text_style.dart';
 import 'package:evoting/core/widgets/shimmerEffect.dart';
 import 'package:evoting/di.dart';
 import 'package:evoting/features/election/domain/entities/candidate_response.dart';
@@ -23,6 +26,8 @@ class ElectionDetailScreen extends StatefulWidget {
 class _ElectionDetailScreenState extends State<ElectionDetailScreen> {
   EthereumAddress loggedInUser;
   ElectionDetailBloc _electionDetailBloc = sl<ElectionDetailBloc>();
+  int candidateIndex;
+  String candidateId = '';
   @override
   void initState() {
     getAnElection();
@@ -67,6 +72,7 @@ class _ElectionDetailScreenState extends State<ElectionDetailScreen> {
                   );
                 } else if (state is FetchAnElectionCompleted) {
                   return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Stack(
                         children: [
@@ -109,59 +115,226 @@ class _ElectionDetailScreenState extends State<ElectionDetailScreen> {
                               ))
                         ],
                       ),
-                      // loggedInUser == state.election.creatorId
-                      //     ? Container()
-                      //     : FlatButton(
-                      //         onPressed: () {
-                      //           _electionBloc.add(JoinAnElection(
-                      //               context: context,
-                      //               electionId: state.election.electionId,
-                      //               loggedInUser: loggedInUser,
-                      //               voterList: state.election.voter));
-                      //         },
-                      //         child: Text("Join")),
-                      // Flexible(
-                      //   flex: 1,
-                      //   child: ListView.builder(
-                      //       itemCount: state.election.voter.length,
-                      //       itemBuilder: (context, index) {
-                      //         EthereumAddress voter =
-                      //             state.election.voter[index];
-                      //         if (state.election.voter.isEmpty) {
-                      //           return Center(
-                      //               child: CircularProgressIndicator());
-                      //         } else {
-                      //           return ListTile(
-                      //             title: Text(voter.toString()),
-                      //           );
-                      //         }
-                      //       }),
-                      // ),
-                      // Flexible(
-                      //   flex: 1,
-                      //   child: ListView.builder(
-                      //       itemCount: state.candidates.length,
-                      //       itemBuilder: (context, index) {
-                      //         CandidateResponse candidatesList =
-                      //             state.candidates[index];
-                      //         if (state.candidates.isEmpty) {
-                      //           return Center(
-                      //               child: CircularProgressIndicator());
-                      //         } else {
-                      //           return ListTile(
-                      //             title: Text(candidatesList.candidateName),
-                      //             leading: Image.network(
-                      //               AppConfig().imageUrlFormat(
-                      //                   folderName: "ElectionCover",
-                      //                   imageName:
-                      //                       candidatesList.candidateImage),
-                      //               height: 100,
-                      //               width: 100,
-                      //             ),
-                      //           );
-                      //         }
-                      //       }),
-                      // ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: UISize.width(20),
+                            vertical: UISize.width(10)),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  state.election.electionName,
+                                  style: StyleText.ralewayBold.copyWith(
+                                      letterSpacing: 1,
+                                      color: UIColors.darkGray,
+                                      fontSize: UISize.fontSize(14)),
+                                ),
+                                loggedInUser == state.election.creatorId
+                                    ? Container()
+                                    : RaisedButton(
+                                        color: state.election.voter
+                                                .contains(loggedInUser)
+                                            ? UIColors.primaryRed
+                                            : UIColors.primaryGreen,
+                                        onPressed: () {
+                                          _electionDetailBloc.add(
+                                              JoinAnElection(
+                                                  context: context,
+                                                  electionId:
+                                                      state.election.electionId,
+                                                  loggedInUser: loggedInUser,
+                                                  voterList:
+                                                      state.election.voter));
+                                        },
+                                        child: Text(
+                                          state.election.voter
+                                                  .contains(loggedInUser)
+                                              ? "JOINED"
+                                              : "JOIN",
+                                          style: StyleText.ralewayBold.copyWith(
+                                              letterSpacing: 1,
+                                              color: UIColors.primaryWhite,
+                                              fontSize: UISize.fontSize(14)),
+                                        )),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: UISize.width(20)),
+                          child: Column(
+                            children: [
+                              Flexible(
+                                flex: 1,
+                                child: Card(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            top: UISize.width(20),
+                                            left: UISize.width(20),
+                                            right: UISize.width(20)),
+                                        child: Text(
+                                          "All Voters",
+                                          style: StyleText.nunitoBold.copyWith(
+                                              color: UIColors.darkGray,
+                                              letterSpacing: 1,
+                                              fontSize: UISize.fontSize(18)),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: ListView.builder(
+                                            itemCount:
+                                                state.election.voter.length,
+                                            itemBuilder: (context, index) {
+                                              EthereumAddress voter =
+                                                  state.election.voter[index];
+                                              if (state
+                                                  .election.voter.isEmpty) {
+                                                return Center(
+                                                    child:
+                                                        CircularProgressIndicator());
+                                              } else {
+                                                return ListTile(
+                                                  title: Text(voter.toString()),
+                                                );
+                                              }
+                                            }),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Flexible(
+                                flex: 1,
+                                child: Card(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            top: UISize.width(20),
+                                            left: UISize.width(20),
+                                            right: UISize.width(20)),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              "Candidates",
+                                              style: StyleText.nunitoBold
+                                                  .copyWith(
+                                                      color: UIColors.darkGray,
+                                                      letterSpacing: 1,
+                                                      fontSize:
+                                                          UISize.fontSize(18)),
+                                            ),
+                                            RaisedButton(
+                                              onPressed: () {
+                                                _electionDetailBloc.add(
+                                                    VoteCandidate(
+                                                        candidateId:
+                                                            candidateId,
+                                                        electionId: state
+                                                            .election
+                                                            .electionId,
+                                                        voterId: loggedInUser));
+                                              },
+                                              child: Text("VOTE"),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: ListView.builder(
+                                            physics: BouncingScrollPhysics(),
+                                            itemCount: state.candidates.length,
+                                            itemBuilder: (context, index) {
+                                              CandidateResponse candidate =
+                                                  state.candidates[index];
+                                              if (state.candidates.isEmpty) {
+                                                return Center(
+                                                    child:
+                                                        CircularProgressIndicator());
+                                              } else {
+                                                return Row(
+                                                  children: [
+                                                    Expanded(
+                                                      child: InkWell(
+                                                        onTap: () {
+                                                          setState(() {
+                                                            candidateIndex =
+                                                                index;
+                                                            candidateId =
+                                                                candidate
+                                                                    .candidateId;
+                                                          });
+                                                        },
+                                                        child: Container(
+                                                          color:
+                                                              candidateIndex ==
+                                                                      index
+                                                                  ? UIColors
+                                                                      .primaryDarkTeal
+                                                                  : Colors
+                                                                      .transparent,
+                                                          padding:
+                                                              EdgeInsets.all(
+                                                                  20),
+                                                          child: Text(
+                                                            candidate
+                                                                .candidateName,
+                                                            style: StyleText
+                                                                .ralewaySemiBold
+                                                                .copyWith(
+                                                                    color: candidateIndex ==
+                                                                            index
+                                                                        ? UIColors
+                                                                            .primaryWhite
+                                                                        : UIColors
+                                                                            .darkGray,
+                                                                    fontSize: UISize
+                                                                        .fontSize(
+                                                                            14)),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    IconButton(
+                                                        icon: Icon(Icons
+                                                            .chevron_right),
+                                                        onPressed: () {
+                                                          ExtendedNavigator.of(
+                                                                  context)
+                                                              .pushNamed(
+                                                                  Routes
+                                                                      .candidateInfoScreen,
+                                                                  arguments: CandidateInfoScreenArguments(
+                                                                      candidateId:
+                                                                          candidate
+                                                                              .candidateId));
+                                                        })
+                                                  ],
+                                                );
+                                              }
+                                            }),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ],
                   );
                 } else if (state is FetchElectionError) {

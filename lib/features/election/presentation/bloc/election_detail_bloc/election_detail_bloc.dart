@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:evoting/core/utils/app_config.dart';
 import 'package:evoting/core/utils/colors.dart';
 import 'package:evoting/core/widgets/toast.dart';
+import 'package:evoting/di.dart';
 import 'package:evoting/features/election/domain/entities/candidate_response.dart';
 import 'package:evoting/features/election/domain/entities/election_response.dart';
 import 'package:flutter/material.dart';
@@ -65,7 +66,8 @@ class ElectionDetailBloc
               context: event.context,
               title: "Success",
               message: "Election Joined Successfully!");
-          // sl<ElectionBloc>().add(FetchAnElection(electionId: event.electionId));
+          sl<ElectionDetailBloc>()
+              .add(FetchAnElection(electionId: event.electionId));
         } else {
           Toast().showToast(
               bgColor: UIColors.primaryPink,
@@ -73,6 +75,17 @@ class ElectionDetailBloc
               title: "Failed to join",
               message: "Error failed to join election.");
         }
+      }
+    } else if (event is VoteCandidate) {
+      final bool response = await AppConfig.runTransaction(
+          functionName: 'voteCandidate',
+          parameter: [event.candidateId, event.voterId]);
+      if (response) {
+        print("Success");
+        sl<ElectionDetailBloc>()
+            .add(FetchAnElection(electionId: event.electionId));
+      } else {
+        print("Error");
       }
     }
   }
