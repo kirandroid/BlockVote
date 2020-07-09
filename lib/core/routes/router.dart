@@ -9,7 +9,10 @@ import 'package:evoting/features/election/presentation/pages/create_election_scr
 import 'package:evoting/features/election/presentation/pages/election_detail_screen.dart';
 import 'package:evoting/features/exitConfirm/exitConfirmScreen.dart';
 import 'package:evoting/features/getStarted/getStartedScreen.dart';
+import 'package:evoting/features/home/presentation/pages/create_post_screen.dart';
+import 'package:evoting/features/home/presentation/pages/post_detail_screen.dart';
 import 'package:evoting/features/indexScreen/index_screen.dart';
+import 'package:evoting/features/profile/presentation/pages/profile_screen.dart';
 
 @MaterialAutoRouter()
 class $Router {
@@ -47,4 +50,22 @@ class $Router {
     transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
   )
   CandidateInfoScreen candidateInfoScreen;
+
+  @GuardedBy([AuthGuard])
+  @CustomRoute(
+    transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
+  )
+  CreatePostScreen createPostScreen;
+
+  @GuardedBy([AuthGuard])
+  @CustomRoute(
+    transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
+  )
+  PostDetailScreen postDetailScreen;
+
+  @GuardedBy([AuthGuard])
+  @CustomRoute(
+    transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
+  )
+  ProfileScreen profileScreen;
 }

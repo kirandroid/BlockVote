@@ -17,6 +17,9 @@ import 'package:evoting/core/routes/route_guards.dart';
 import 'package:evoting/features/election/presentation/pages/create_election_screen.dart';
 import 'package:evoting/features/election/presentation/pages/election_detail_screen.dart';
 import 'package:evoting/features/election/presentation/pages/candidate_info_screen.dart';
+import 'package:evoting/features/home/presentation/pages/create_post_screen.dart';
+import 'package:evoting/features/home/presentation/pages/post_detail_screen.dart';
+import 'package:evoting/features/profile/presentation/pages/profile_screen.dart';
 
 abstract class Routes {
   static const exitConfirmScreen = '/';
@@ -28,6 +31,9 @@ abstract class Routes {
   static const createElectionScreen = '/create-election-screen';
   static const electionDetailScreen = '/election-detail-screen';
   static const candidateInfoScreen = '/candidate-info-screen';
+  static const createPostScreen = '/create-post-screen';
+  static const postDetailScreen = '/post-detail-screen';
+  static const profileScreen = '/profile-screen';
   static const all = {
     exitConfirmScreen,
     getStartedScreen,
@@ -38,6 +44,9 @@ abstract class Routes {
     createElectionScreen,
     electionDetailScreen,
     candidateInfoScreen,
+    createPostScreen,
+    postDetailScreen,
+    profileScreen,
   };
 }
 
@@ -50,6 +59,9 @@ class Router extends RouterBase {
         Routes.createElectionScreen: [AuthGuard],
         Routes.electionDetailScreen: [AuthGuard],
         Routes.candidateInfoScreen: [AuthGuard],
+        Routes.createPostScreen: [AuthGuard],
+        Routes.postDetailScreen: [AuthGuard],
+        Routes.profileScreen: [AuthGuard],
       };
   @Deprecated('call ExtendedNavigator.ofRouter<Router>() directly')
   static ExtendedNavigatorState get navigator =>
@@ -124,6 +136,33 @@ class Router extends RouterBase {
           settings: settings,
           transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
         );
+      case Routes.createPostScreen:
+        return PageRouteBuilder<dynamic>(
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              CreatePostScreen(),
+          settings: settings,
+          transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
+        );
+      case Routes.postDetailScreen:
+        if (hasInvalidArgs<PostDetailScreenArguments>(args, isRequired: true)) {
+          return misTypedArgsRoute<PostDetailScreenArguments>(args);
+        }
+        final typedArgs = args as PostDetailScreenArguments;
+        return PageRouteBuilder<dynamic>(
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              PostDetailScreen(
+                  postId: typedArgs.postId,
+                  loggedInUser: typedArgs.loggedInUser),
+          settings: settings,
+          transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
+        );
+      case Routes.profileScreen:
+        return PageRouteBuilder<dynamic>(
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              ProfileScreen(),
+          settings: settings,
+          transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
+        );
       default:
         return unknownRoutePage(settings.name);
     }
@@ -144,4 +183,12 @@ class ElectionDetailScreenArguments {
 class CandidateInfoScreenArguments {
   final String candidateId;
   CandidateInfoScreenArguments({@required this.candidateId});
+}
+
+//PostDetailScreen arguments holder class
+class PostDetailScreenArguments {
+  final String postId;
+  final String loggedInUser;
+  PostDetailScreenArguments(
+      {@required this.postId, @required this.loggedInUser});
 }

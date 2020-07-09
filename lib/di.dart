@@ -2,6 +2,8 @@ import 'package:evoting/features/election/presentation/bloc/candidate_info_bloc/
 import 'package:evoting/features/election/presentation/bloc/create_election_bloc/create_election_bloc.dart';
 import 'package:evoting/features/election/presentation/bloc/election_detail_bloc/election_detail_bloc.dart';
 import 'package:evoting/features/election/presentation/bloc/election_list_bloc/election_list_bloc.dart';
+import 'package:evoting/features/home/presentation/bloc/create_post_bloc/create_post_bloc.dart';
+import 'package:evoting/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 final GetIt sl = GetIt.instance;
@@ -15,4 +17,6 @@ void _blocRegister() {
   sl.registerLazySingleton(() => ElectionListBloc());
   sl.registerLazySingleton(() => CreateElectionBloc());
   sl.registerLazySingleton(() => CandidateInfoBloc());
+  sl.registerLazySingleton(() => CreatePostBloc());
+  sl.registerFactory(() => ProfileBloc());
 }

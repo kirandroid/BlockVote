@@ -10,9 +10,9 @@ import 'package:crypto/crypto.dart';
 
 class AppConfig {
   final String relayWallet =
-      "5efbb5b68a6eed2e1cb9f1d7ca09b465b9100f70f17e8b2ba74b6bd471cddcfd";
-  final String apiUrl = "http://192.168.1.13:8545";
-  final String contractAddress = "0xdB467753A62eD2072534114606D71a6dFCE83dE1";
+      "edb3c5c7a962029632829a2f83e0b4c1ec35d820c219dd9025b356bb1f392e42";
+  final String apiUrl = "http://192.168.1.21:8545";
+  final String contractAddress = "0x1291ac4E43598BF9A2A796ebA253f4220432A273";
   // final String apiUrl =
   //     "https://ropsten.infura.io/v3/759c8e94cb37497a9218009e21542fb7";
 
