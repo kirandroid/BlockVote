@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:evoting/core/utils/app_config.dart';
 import 'package:evoting/core/utils/colors.dart';
 import 'package:evoting/features/authentication/domain/entities/user_response.dart';
 import 'package:evoting/features/election/domain/entities/election_response.dart';
+import 'package:evoting/features/profile/domain/firestore_user_response.dart';
 import 'package:meta/meta.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:intl/intl.dart';
@@ -37,12 +39,19 @@ class ElectionListBloc extends Bloc<ElectionListEvent, ElectionListState> {
                   contract: contract,
                   function: getElection,
                   params: [BigInt.from(i)]));
-          UserResponse userResponse = UserResponse.fromMap(await AppConfig()
-              .ethClient()
-              .call(
-                  contract: contract,
-                  function: getUserFunction,
-                  params: [electionResponse.creatorId]));
+          // UserResponse userResponse = UserResponse.fromMap(await AppConfig()
+          //     .ethClient()
+          //     .call(
+          //         contract: contract,
+          //         function: getUserFunction,
+          //         params: [electionResponse.creatorId]));
+
+          DocumentSnapshot response = await Firestore.instance
+              .collection("users")
+              .document(electionResponse.creatorId.toString())
+              .get();
+          FirestoreUserResponse userResponse =
+              FirestoreUserResponse.fromMap(response.data);
           DateTime now = DateTime.now();
           DateTime today =
               DateTime(now.year, now.month, now.day, now.hour, now.minute);

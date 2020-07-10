@@ -1,14 +1,18 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:evoting/core/routes/router.gr.dart';
 import 'package:evoting/core/service/address_service.dart';
 import 'package:evoting/core/service/configuration_service.dart';
 import 'package:evoting/core/utils/app_config.dart';
+import 'package:evoting/core/utils/strings.dart';
 import 'package:evoting/core/widgets/toast.dart';
 import 'package:evoting/features/authentication/domain/entities/user_response.dart';
+import 'package:evoting/features/profile/domain/firestore_user_response.dart';
 import 'package:flutter/widgets.dart';
 import 'package:web3dart/credentials.dart';
 import 'package:web3dart/web3dart.dart';
@@ -31,13 +35,27 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       yield AuthLoading();
 
       final bool response = await AppConfig.runTransaction(
-          functionName: 'registerUser',
-          parameter: [publicKey, event.firstName, event.lastName]);
+          functionName: 'registerUser', parameter: [publicKey]);
 
       if (response) {
-        yield AuthCompleted();
-        ExtendedNavigator.of(event.context)
-            .pushReplacementNamed(Routes.registerCompleteScreen);
+        try {
+          await Firestore.instance
+              .collection("users")
+              .document(publicKey.toString())
+              .setData(FirestoreUserResponse(
+                      firstName: event.firstName,
+                      gender: event.gender,
+                      id: publicKey.toString(),
+                      lastName: event.lastName,
+                      profilePicture: UIStrings.defaultProfilePicURL)
+                  .toMap());
+
+          yield AuthCompleted();
+          ExtendedNavigator.of(event.context)
+              .pushReplacementNamed(Routes.registerCompleteScreen);
+        } catch (e) {
+          print(e);
+        }
       } else {
         yield AuthError();
         Toast().showToast(

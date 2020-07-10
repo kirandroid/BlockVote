@@ -104,7 +104,7 @@ class _ElectionScreenState extends State<ElectionScreen> {
                                                 ElectionDetailScreenArguments(
                                                     electionId:
                                                         election.electionId));
-                                      } else if (election.voter
+                                      } else if (election.pendingVoter
                                           .contains(loggedInUserKey)) {
                                         ExtendedNavigator.of(context).pushNamed(
                                             Routes.electionDetailScreen,

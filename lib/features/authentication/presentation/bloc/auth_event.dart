@@ -7,13 +7,19 @@ abstract class AuthEvent extends Equatable {
 class RegisterUser implements AuthEvent {
   final String firstName;
   final String lastName;
+  final String gender;
   final String seedPhrase;
   final BuildContext context;
 
-  RegisterUser({this.firstName, this.lastName, this.seedPhrase, this.context});
+  RegisterUser(
+      {this.firstName,
+      this.lastName,
+      this.seedPhrase,
+      this.context,
+      this.gender});
 
   @override
-  List<Object> get props => [firstName, lastName, seedPhrase];
+  List<Object> get props => [firstName, lastName, seedPhrase, gender];
 
   @override
   bool get stringify => true;

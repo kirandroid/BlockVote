@@ -22,6 +22,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   AuthBloc _authBloc = AuthBloc();
+  String genderValue = 'Male';
 
   @override
   void initState() {
@@ -130,6 +131,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     borderSide: BorderSide(style: BorderStyle.none)),
               ),
             ),
+            DropdownButton<String>(
+              value: genderValue,
+              elevation: 16,
+              style: StyleText.ralewayMedium.copyWith(
+                  color: UIColors.darkGray, fontSize: UISize.fontSize(14)),
+              underline: Container(
+                  height: 1, color: UIColors.darkGray.withOpacity(0.2)),
+              onChanged: (String newValue) {
+                setState(() {
+                  genderValue = newValue;
+                });
+              },
+              items: <String>[
+                'Male',
+                'Female',
+                'Other',
+              ].map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(
+                    value,
+                  ),
+                );
+              }).toList(),
+            ),
             SizedBox(
               height: 10,
             ),
@@ -200,6 +226,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           firstName: firstNameController.text.trim(),
                           lastName: lastNameController.text.trim(),
                           seedPhrase: mnemonic,
+                          gender: genderValue,
                           context: context));
                     },
                   ),

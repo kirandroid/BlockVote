@@ -12,7 +12,8 @@ class ElectionResponse {
   final bool isActive;
   final List<dynamic> candidates;
   final String electionCover;
-  final List<dynamic> voter;
+  final List<dynamic> pendingVoter;
+  final List<dynamic> approvedVoter;
   String formattedStartDate;
   String formattedEndDate;
   String creatorName;
@@ -29,7 +30,8 @@ class ElectionResponse {
       this.isActive,
       this.candidates,
       this.electionCover,
-      this.voter,
+      this.pendingVoter,
+      this.approvedVoter,
       this.formattedStartDate,
       this.formattedEndDate,
       this.creatorName,
@@ -46,7 +48,8 @@ class ElectionResponse {
         isActive = data.first[7],
         candidates = data.first[8],
         electionCover = data.first[9],
-        voter = data.first[10];
+        pendingVoter = data.first[10],
+        approvedVoter = data.first[11];
 }
 
 class ElectionStatus {

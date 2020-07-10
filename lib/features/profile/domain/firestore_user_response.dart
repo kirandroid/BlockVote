@@ -18,4 +18,12 @@ class FirestoreUserResponse {
         gender = data["gender"],
         id = data["id"],
         profilePicture = data["profilePicture"];
+
+  Map<String, dynamic> toMap() => {
+        'firstName': firstName,
+        'lastName': lastName,
+        'gender': gender,
+        'id': id,
+        'profilePicture': profilePicture
+      };
 }

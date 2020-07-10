@@ -21,7 +21,8 @@ class CreateElectionBloc
     if (event is CreateElection) {
       yield CreateElectionLoading();
       String imageName = '';
-      List<EthereumAddress> voter = [];
+      List<EthereumAddress> pendingVoter = [];
+      List<EthereumAddress> approvedVoter = [];
       if (event.image != null) {
         var uuid = new Uuid();
         imageName = uuid.v4();
@@ -62,7 +63,8 @@ class CreateElectionBloc
             event.isActive,
             event.candidates.map((candidate) => candidate.candidateId).toList(),
             imageName,
-            voter
+            pendingVoter,
+            approvedVoter
           ]);
 
       if (response) {

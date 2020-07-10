@@ -87,6 +87,17 @@ class ElectionDetailBloc
       } else {
         print("Error");
       }
+    } else if (event is ApproveVoter) {
+      final bool response = await AppConfig.runTransaction(
+          functionName: 'approveVoter',
+          parameter: [event.voterId, event.electionId]);
+      if (response) {
+        print("Success");
+        sl<ElectionDetailBloc>()
+            .add(FetchAnElection(electionId: event.electionId));
+      } else {
+        print("Error");
+      }
     }
   }
 

@@ -134,7 +134,7 @@ class _ElectionDetailScreenState extends State<ElectionDetailScreen> {
                                 loggedInUser == state.election.creatorId
                                     ? Container()
                                     : RaisedButton(
-                                        color: state.election.voter
+                                        color: state.election.pendingVoter
                                                 .contains(loggedInUser)
                                             ? UIColors.primaryRed
                                             : UIColors.primaryGreen,
@@ -145,11 +145,11 @@ class _ElectionDetailScreenState extends State<ElectionDetailScreen> {
                                                   electionId:
                                                       state.election.electionId,
                                                   loggedInUser: loggedInUser,
-                                                  voterList:
-                                                      state.election.voter));
+                                                  voterList: state
+                                                      .election.pendingVoter));
                                         },
                                         child: Text(
-                                          state.election.voter
+                                          state.election.pendingVoter
                                                   .contains(loggedInUser)
                                               ? "JOINED"
                                               : "JOIN",
@@ -182,7 +182,7 @@ class _ElectionDetailScreenState extends State<ElectionDetailScreen> {
                                             left: UISize.width(20),
                                             right: UISize.width(20)),
                                         child: Text(
-                                          "All Voters",
+                                          "Pending",
                                           style: StyleText.nunitoBold.copyWith(
                                               color: UIColors.darkGray,
                                               letterSpacing: 1,
@@ -191,22 +191,86 @@ class _ElectionDetailScreenState extends State<ElectionDetailScreen> {
                                       ),
                                       Expanded(
                                         child: ListView.builder(
-                                            itemCount:
-                                                state.election.voter.length,
+                                            itemCount: state
+                                                .election.pendingVoter.length,
                                             itemBuilder: (context, index) {
-                                              EthereumAddress voter =
-                                                  state.election.voter[index];
-                                              if (state
-                                                  .election.voter.isEmpty) {
+                                              EthereumAddress voter = state
+                                                  .election.pendingVoter[index];
+                                              if (state.election.pendingVoter
+                                                  .isEmpty) {
                                                 return Center(
                                                     child:
                                                         CircularProgressIndicator());
                                               } else {
-                                                return ListTile(
-                                                  title: Text(voter.toString()),
+                                                return Row(
+                                                  children: [
+                                                    Expanded(
+                                                      child: ListTile(
+                                                        title: Text(
+                                                            voter.toString()),
+                                                      ),
+                                                    ),
+                                                    state.election.creatorId ==
+                                                            loggedInUser
+                                                        ? IconButton(
+                                                            icon: Icon(
+                                                                Icons.done),
+                                                            onPressed: () {
+                                                              _electionDetailBloc
+                                                                  .add(ApproveVoter(
+                                                                      electionId: state
+                                                                          .election
+                                                                          .electionId,
+                                                                      voterId:
+                                                                          voter));
+                                                            })
+                                                        : Container(),
+                                                  ],
                                                 );
                                               }
                                             }),
+                                      ),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              "Approved",
+                                              style: StyleText.nunitoBold
+                                                  .copyWith(
+                                                      color: UIColors.darkGray,
+                                                      letterSpacing: 1,
+                                                      fontSize:
+                                                          UISize.fontSize(18)),
+                                            ),
+                                            Expanded(
+                                              child: ListView.builder(
+                                                  itemCount: state.election
+                                                      .approvedVoter.length,
+                                                  itemBuilder:
+                                                      (context, index) {
+                                                    EthereumAddress voter =
+                                                        state.election
+                                                                .approvedVoter[
+                                                            index];
+                                                    if (state
+                                                        .election
+                                                        .approvedVoter
+                                                        .isEmpty) {
+                                                      return Center(
+                                                          child:
+                                                              CircularProgressIndicator());
+                                                    } else {
+                                                      return ListTile(
+                                                        title: Text(
+                                                            voter.toString()),
+                                                      );
+                                                    }
+                                                  }),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ],
                                   ),

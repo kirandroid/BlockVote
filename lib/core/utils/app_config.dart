@@ -12,7 +12,7 @@ class AppConfig {
   final String relayWallet =
       "edb3c5c7a962029632829a2f83e0b4c1ec35d820c219dd9025b356bb1f392e42";
   final String apiUrl = "http://192.168.1.21:8545";
-  final String contractAddress = "0x1291ac4E43598BF9A2A796ebA253f4220432A273";
+  final String contractAddress = "0x36faED6E503Ef1b36Bead18C4E34A7208B2CCFCe";
   // final String apiUrl =
   //     "https://ropsten.infura.io/v3/759c8e94cb37497a9218009e21542fb7";
 
