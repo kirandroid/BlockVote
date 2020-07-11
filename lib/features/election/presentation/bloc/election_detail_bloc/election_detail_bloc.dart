@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:evoting/core/utils/app_config.dart';
 import 'package:evoting/core/utils/colors.dart';
 import 'package:evoting/core/widgets/toast.dart';
@@ -61,6 +62,12 @@ class ElectionDetailBloc
             functionName: 'joinElection',
             parameter: [event.electionId, event.loggedInUser]);
         if (response) {
+          await Firestore.instance
+              .collection("users")
+              .document(event.loggedInUser.toString())
+              .updateData({
+            "participatedElections": FieldValue.arrayUnion([event.electionId])
+          });
           Toast().showToast(
               bgColor: UIColors.primaryDarkTeal,
               context: event.context,

@@ -1,11 +1,13 @@
 import 'dart:math';
 
+import 'package:evoting/core/utils/app_config.dart';
 import 'package:evoting/features/election/presentation/pages/election_screen.dart';
 import 'package:evoting/features/home/presentation/pages/home_screen.dart';
 import 'package:evoting/features/indexScreen/widget/navbar.dart';
 import 'package:evoting/features/profile/presentation/pages/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
+import 'package:web3dart/credentials.dart';
 
 class IndexScreen extends StatefulWidget {
   @override
@@ -18,6 +20,18 @@ class _IndexScreenState extends State<IndexScreen> {
   bool isGuide = false;
   List<Widget> _viewsByIndex;
   String userId;
+  @override
+  void initState() {
+    getLoggedInUser();
+    super.initState();
+  }
+
+  void getLoggedInUser() async {
+    EthereumAddress userKey = await AppConfig.loggedInUserKey;
+    setState(() {
+      userId = userKey.toString();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +43,13 @@ class _IndexScreenState extends State<IndexScreen> {
     ];
 
     //Create the views which will be mapped to the indices for our nav btns
-    _viewsByIndex = <Widget>[HomeScreen(), ElectionScreen(), ProfileScreen()];
+    _viewsByIndex = <Widget>[
+      HomeScreen(),
+      ElectionScreen(),
+      ProfileScreen(
+        userId: userId,
+      )
+    ];
 
     var accentColor = _navBarItems[_selectedNavIndex].selectedColor;
 

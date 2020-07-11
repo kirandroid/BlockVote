@@ -18,17 +18,16 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   ) async* {
     if (event is FetchFirestoreUserProfile) {
       yield ProfileLoading();
-      final EthereumAddress loggedInUserKey = await AppConfig.loggedInUserKey;
       try {
         DocumentSnapshot response = await Firestore.instance
             .collection("users")
-            .document(loggedInUserKey.toString())
+            .document(event.userId)
             .get();
         FirestoreUserResponse userResponse =
             FirestoreUserResponse.fromMap(response.data);
         yield ProfileCompleted(firestoreUserResponse: userResponse);
       } catch (e) {
-        yield ProfileError(errorMessage: e);
+        yield ProfileError(errorMessage: e.toString());
       }
     }
   }

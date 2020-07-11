@@ -5,6 +5,7 @@ abstract class ProfileEvent {}
 
 class FetchFirestoreUserProfile implements ProfileEvent {
   final BuildContext context;
+  final String userId;
 
-  FetchFirestoreUserProfile({this.context});
+  FetchFirestoreUserProfile({this.context, this.userId});
 }

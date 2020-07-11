@@ -43,12 +43,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
               .collection("users")
               .document(publicKey.toString())
               .setData(FirestoreUserResponse(
-                      firstName: event.firstName,
-                      gender: event.gender,
-                      id: publicKey.toString(),
-                      lastName: event.lastName,
-                      profilePicture: UIStrings.defaultProfilePicURL)
-                  .toMap());
+                  firstName: event.firstName,
+                  gender: event.gender,
+                  id: publicKey.toString(),
+                  lastName: event.lastName,
+                  profilePicture: UIStrings.defaultProfilePicURL,
+                  myElections: [],
+                  participatedElections: []).toMap());
 
           yield AuthCompleted();
           ExtendedNavigator.of(event.context)

@@ -17,6 +17,6 @@ void _blocRegister() {
   sl.registerLazySingleton(() => ElectionListBloc());
   sl.registerLazySingleton(() => CreateElectionBloc());
   sl.registerLazySingleton(() => CandidateInfoBloc());
-  sl.registerLazySingleton(() => CreatePostBloc());
+  sl.registerFactory(() => CreatePostBloc());
   sl.registerFactory(() => ProfileBloc());
 }

@@ -17,7 +17,7 @@ class EmptyScreen extends StatelessWidget {
           // Search empty Image
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16),
-            child: Image.asset("lib/assets/searchEmpty.png"),
+            child: Image.asset("searchEmpty.png"),
           ),
 
           // Search list is empty text

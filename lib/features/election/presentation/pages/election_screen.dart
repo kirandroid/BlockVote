@@ -301,7 +301,7 @@ class _ElectionScreenState extends State<ElectionScreen> {
     );
   }
 
-  void checkPassword({String electionPassword, BigInt electionId}) {
+  void checkPassword({String electionPassword, String electionId}) {
     String hashedPassword =
         AppConfig().hashPassword(password: _passwordController.text);
     if (hashedPassword == electionPassword) {

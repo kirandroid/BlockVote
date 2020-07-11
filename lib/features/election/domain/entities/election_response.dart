@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:web3dart/credentials.dart';
 
 class ElectionResponse {
-  final BigInt electionId;
+  final String electionId;
   final String electionName;
   final EthereumAddress creatorId;
   final String password;

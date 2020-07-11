@@ -39,7 +39,8 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     setState(() {
       loggedInUser = loggedInUserKey.toString();
     });
-    _profileBloc.add(FetchFirestoreUserProfile());
+    _profileBloc
+        .add(FetchFirestoreUserProfile(context: context, userId: loggedInUser));
   }
 
   @override

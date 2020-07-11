@@ -25,27 +25,18 @@ class ElectionListBloc extends Bloc<ElectionListEvent, ElectionListState> {
       List<ElectionResponse> electionList = [];
       yield ElectionListLoading();
 
-      final getElectionCount = contract.function('nextElectionId');
+      final getElectionIdList = contract.function('getAllElectionId');
       final getElection = contract.function('getAnElection');
-      final getUserFunction = contract.function('getUser');
-
       await AppConfig().ethClient().call(
           contract: contract,
-          function: getElectionCount,
-          params: []).then((count) async {
-        for (var i = 1; i < int.parse(count.first.toString()); i++) {
+          function: getElectionIdList,
+          params: []).then((electionIdList) async {
+        for (var i = 0; i < electionIdList.first.length; i++) {
           ElectionResponse electionResponse = ElectionResponse.fromMap(
               await AppConfig().ethClient().call(
                   contract: contract,
                   function: getElection,
-                  params: [BigInt.from(i)]));
-          // UserResponse userResponse = UserResponse.fromMap(await AppConfig()
-          //     .ethClient()
-          //     .call(
-          //         contract: contract,
-          //         function: getUserFunction,
-          //         params: [electionResponse.creatorId]));
-
+                  params: [electionIdList.first[i]]));
           DocumentSnapshot response = await Firestore.instance
               .collection("users")
               .document(electionResponse.creatorId.toString())

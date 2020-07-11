@@ -35,7 +35,8 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       loggedInUser = loggedInUserKey.toString();
     });
-    _profileBloc.add(FetchFirestoreUserProfile(context: context));
+    _profileBloc
+        .add(FetchFirestoreUserProfile(context: context, userId: loggedInUser));
   }
 
   @override
@@ -81,7 +82,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                   child: Container(
                       padding: EdgeInsets.all(UISize.width(8)),
-                      height: UISize.width(100),
                       child: BlocBuilder<ProfileBloc, ProfileState>(
                           bloc: this._profileBloc,
                           builder: (BuildContext context, ProfileState state) {

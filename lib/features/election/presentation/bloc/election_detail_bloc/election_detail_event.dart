@@ -4,13 +4,13 @@ part of 'election_detail_bloc.dart';
 abstract class ElectionDetailEvent {}
 
 class FetchAnElection implements ElectionDetailEvent {
-  final BigInt electionId;
+  final String electionId;
   FetchAnElection({@required this.electionId});
 }
 
 class JoinAnElection implements ElectionDetailEvent {
   final EthereumAddress loggedInUser;
-  final BigInt electionId;
+  final String electionId;
   final BuildContext context;
   final List<dynamic> voterList;
 
@@ -20,14 +20,14 @@ class JoinAnElection implements ElectionDetailEvent {
 
 class ApproveVoter implements ElectionDetailEvent {
   final EthereumAddress voterId;
-  final BigInt electionId;
+  final String electionId;
   ApproveVoter({this.electionId, this.voterId});
 }
 
 class VoteCandidate implements ElectionDetailEvent {
   final EthereumAddress voterId;
   final String candidateId;
-  final BigInt electionId;
+  final String electionId;
 
   VoteCandidate({this.voterId, this.candidateId, this.electionId});
 }

@@ -16,7 +16,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:web3dart/web3dart.dart';
 
 class ElectionDetailScreen extends StatefulWidget {
-  final BigInt electionId;
+  final String electionId;
 
   const ElectionDetailScreen({@required this.electionId});
   @override

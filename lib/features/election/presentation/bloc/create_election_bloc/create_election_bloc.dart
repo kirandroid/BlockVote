@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:evoting/core/utils/app_config.dart';
 import 'package:evoting/features/election/domain/entities/candidate_response.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -23,8 +23,9 @@ class CreateElectionBloc
       String imageName = '';
       List<EthereumAddress> pendingVoter = [];
       List<EthereumAddress> approvedVoter = [];
+      var uuid = new Uuid();
+      String electionId = uuid.v4();
       if (event.image != null) {
-        var uuid = new Uuid();
         imageName = uuid.v4();
         StorageReference storageReference =
             FirebaseStorage.instance.ref().child("ElectionCover/$imageName");
@@ -54,6 +55,7 @@ class CreateElectionBloc
       final bool response = await AppConfig.runTransaction(
           functionName: 'createElection',
           parameter: [
+            electionId,
             event.electionName,
             userPublicKey,
             AppConfig().hashPassword(password: event.electionPassword),
@@ -68,6 +70,12 @@ class CreateElectionBloc
           ]);
 
       if (response) {
+        await Firestore.instance
+            .collection("users")
+            .document(userPublicKey.toString())
+            .updateData({
+          "myElections": FieldValue.arrayUnion([electionId])
+        });
         yield CreateElectionCompleted();
       } else {
         yield CreateElectionError(

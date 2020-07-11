@@ -157,9 +157,13 @@ class Router extends RouterBase {
           transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
         );
       case Routes.profileScreen:
+        if (hasInvalidArgs<ProfileScreenArguments>(args, isRequired: true)) {
+          return misTypedArgsRoute<ProfileScreenArguments>(args);
+        }
+        final typedArgs = args as ProfileScreenArguments;
         return PageRouteBuilder<dynamic>(
           pageBuilder: (context, animation, secondaryAnimation) =>
-              ProfileScreen(),
+              ProfileScreen(userId: typedArgs.userId),
           settings: settings,
           transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
         );
@@ -175,7 +179,7 @@ class Router extends RouterBase {
 
 //ElectionDetailScreen arguments holder class
 class ElectionDetailScreenArguments {
-  final BigInt electionId;
+  final String electionId;
   ElectionDetailScreenArguments({@required this.electionId});
 }
 
@@ -191,4 +195,10 @@ class PostDetailScreenArguments {
   final String loggedInUser;
   PostDetailScreenArguments(
       {@required this.postId, @required this.loggedInUser});
+}
+
+//ProfileScreen arguments holder class
+class ProfileScreenArguments {
+  final String userId;
+  ProfileScreenArguments({@required this.userId});
 }
