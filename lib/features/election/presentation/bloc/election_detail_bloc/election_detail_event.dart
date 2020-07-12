@@ -28,6 +28,8 @@ class VoteCandidate implements ElectionDetailEvent {
   final EthereumAddress voterId;
   final String candidateId;
   final String electionId;
+  final BuildContext context;
 
-  VoteCandidate({this.voterId, this.candidateId, this.electionId});
+  VoteCandidate(
+      {this.voterId, this.candidateId, this.electionId, this.context});
 }

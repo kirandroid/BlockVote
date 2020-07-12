@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:evoting/core/utils/app_config.dart';
 import 'package:evoting/core/utils/colors.dart';
+import 'package:evoting/core/utils/voting_config.dart';
 import 'package:evoting/features/authentication/domain/entities/user_response.dart';
 import 'package:evoting/features/election/domain/entities/election_response.dart';
 import 'package:evoting/features/profile/domain/firestore_user_response.dart';
@@ -43,49 +44,21 @@ class ElectionListBloc extends Bloc<ElectionListEvent, ElectionListState> {
               .get();
           FirestoreUserResponse userResponse =
               FirestoreUserResponse.fromMap(response.data);
-          DateTime now = DateTime.now();
-          DateTime today =
-              DateTime(now.year, now.month, now.day, now.hour, now.minute);
+
           DateTime startDate = DateTime.fromMillisecondsSinceEpoch(
               int.parse(electionResponse.startDate.toString()));
           DateTime endDate = DateTime.fromMillisecondsSinceEpoch(
               int.parse(electionResponse.endDate.toString()));
 
-          DateTime parsedStartDate = DateTime(startDate.year, startDate.month,
-              startDate.day, startDate.hour, startDate.minute);
-          DateTime parsedEndDate = DateTime(endDate.year, endDate.month,
-              endDate.day, endDate.hour, endDate.minute);
           electionResponse.creatorName =
               "${userResponse.firstName} ${userResponse.lastName}";
           electionResponse.formattedStartDate =
               DateFormat("MMM dd").format(startDate);
           electionResponse.formattedEndDate =
               DateFormat("MMM dd").format(endDate);
+          electionResponse.status = VotingConfig()
+              .checkVotingStatus(electionResponse: electionResponse);
 
-          if (electionResponse.isActive && parsedStartDate.isBefore(today)) {
-            electionResponse.status = ElectionStatus(
-                status: "ACTIVE",
-                statusColor: UIColors.primaryDarkTeal,
-                reason: "Voter can Join.",
-                shouldWarn: false);
-          } else if (!electionResponse.isActive ||
-              parsedEndDate.isAfter(today)) {
-            electionResponse.status = ElectionStatus(
-                status: "INACTIVE",
-                statusColor: UIColors.primaryRed,
-                reason:
-                    "This election is expired or close. You cannot join but view the result.",
-                shouldWarn: true);
-          } else if (electionResponse.isActive &&
-              parsedEndDate.isBefore(today) &&
-              parsedStartDate.isAfter(today)) {
-            electionResponse.status = ElectionStatus(
-                status: "VOTING",
-                statusColor: UIColors.primaryGreen,
-                reason:
-                    "This election is running. You can view the ongoing result but cannot join.",
-                shouldWarn: true);
-          }
           electionList.add(electionResponse);
         }
       });

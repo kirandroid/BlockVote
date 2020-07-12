@@ -10,7 +10,13 @@ class FetchElectionLoading extends ElectionDetailState {}
 class FetchAnElectionCompleted extends ElectionDetailState {
   final ElectionResponse election;
   final List<CandidateResponse> candidates;
-  FetchAnElectionCompleted({this.election, this.candidates});
+  final Color joinButtonColor;
+  final String joinButtonText;
+  FetchAnElectionCompleted(
+      {this.election,
+      this.candidates,
+      this.joinButtonColor,
+      this.joinButtonText});
 }
 
 class FetchElectionError extends ElectionDetailState {

@@ -15,7 +15,7 @@ Future<void> initDI() async {
 void _blocRegister() {
   sl.registerLazySingleton(() => ElectionDetailBloc());
   sl.registerLazySingleton(() => ElectionListBloc());
-  sl.registerLazySingleton(() => CreateElectionBloc());
+  sl.registerFactory(() => CreateElectionBloc());
   sl.registerLazySingleton(() => CandidateInfoBloc());
   sl.registerFactory(() => CreatePostBloc());
   sl.registerFactory(() => ProfileBloc());

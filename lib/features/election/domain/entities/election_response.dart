@@ -14,6 +14,7 @@ class ElectionResponse {
   final String electionCover;
   final List<dynamic> pendingVoter;
   final List<dynamic> approvedVoter;
+  List<dynamic> votedVoter;
   String formattedStartDate;
   String formattedEndDate;
   String creatorName;
@@ -35,7 +36,8 @@ class ElectionResponse {
       this.formattedStartDate,
       this.formattedEndDate,
       this.creatorName,
-      this.status});
+      this.status,
+      this.votedVoter});
 
   ElectionResponse.fromMap(List data)
       : electionId = data.first[0],

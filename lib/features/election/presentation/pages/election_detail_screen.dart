@@ -6,6 +6,7 @@ import 'package:evoting/core/utils/colors.dart';
 import 'package:evoting/core/utils/sizes.dart';
 import 'package:evoting/core/utils/text_style.dart';
 import 'package:evoting/core/widgets/shimmerEffect.dart';
+import 'package:evoting/core/widgets/toast.dart';
 import 'package:evoting/di.dart';
 import 'package:evoting/features/election/domain/entities/candidate_response.dart';
 import 'package:evoting/features/election/domain/entities/election_response.dart';
@@ -134,25 +135,35 @@ class _ElectionDetailScreenState extends State<ElectionDetailScreen> {
                                 loggedInUser == state.election.creatorId
                                     ? Container()
                                     : RaisedButton(
-                                        color: state.election.pendingVoter
-                                                .contains(loggedInUser)
-                                            ? UIColors.primaryRed
-                                            : UIColors.primaryGreen,
-                                        onPressed: () {
-                                          _electionDetailBloc.add(
-                                              JoinAnElection(
-                                                  context: context,
-                                                  electionId:
-                                                      state.election.electionId,
-                                                  loggedInUser: loggedInUser,
-                                                  voterList: state
-                                                      .election.pendingVoter));
-                                        },
+                                        color: state.joinButtonColor,
+                                        onPressed: state.election.status
+                                                    .shouldWarn ||
+                                                state.election.pendingVoter
+                                                    .contains(loggedInUser) ||
+                                                state.election.approvedVoter
+                                                    .contains(loggedInUser)
+                                            ? () {
+                                                Toast().showToast(
+                                                    context: context,
+                                                    title: "Error",
+                                                    message:
+                                                        "Cannot join the election");
+                                              }
+                                            : () {
+                                                _electionDetailBloc.add(
+                                                    JoinAnElection(
+                                                        context: context,
+                                                        electionId:
+                                                            state.election
+                                                                .electionId,
+                                                        loggedInUser:
+                                                            loggedInUser,
+                                                        voterList: state
+                                                            .election
+                                                            .pendingVoter));
+                                              },
                                         child: Text(
-                                          state.election.pendingVoter
-                                                  .contains(loggedInUser)
-                                              ? "JOINED"
-                                              : "JOIN",
+                                          state.joinButtonText,
                                           style: StyleText.ralewayBold.copyWith(
                                               letterSpacing: 1,
                                               color: UIColors.primaryWhite,
@@ -302,16 +313,35 @@ class _ElectionDetailScreenState extends State<ElectionDetailScreen> {
                                                           UISize.fontSize(18)),
                                             ),
                                             RaisedButton(
-                                              onPressed: () {
-                                                _electionDetailBloc.add(
-                                                    VoteCandidate(
-                                                        candidateId:
-                                                            candidateId,
-                                                        electionId: state
-                                                            .election
-                                                            .electionId,
-                                                        voterId: loggedInUser));
-                                              },
+                                              onPressed: state.election
+                                                          .approvedVoter
+                                                          .contains(
+                                                              loggedInUser) &&
+                                                      state.election.status
+                                                              .status ==
+                                                          'VOTING' &&
+                                                      !state.election.votedVoter
+                                                          .contains(
+                                                              loggedInUser)
+                                                  ? () {
+                                                      _electionDetailBloc.add(
+                                                          VoteCandidate(
+                                                              context: context,
+                                                              candidateId:
+                                                                  candidateId,
+                                                              electionId: state
+                                                                  .election
+                                                                  .electionId,
+                                                              voterId:
+                                                                  loggedInUser));
+                                                    }
+                                                  : () {
+                                                      Toast().showToast(
+                                                          context: context,
+                                                          title: "Error",
+                                                          message:
+                                                              "User cannot vote now!");
+                                                    },
                                               child: Text("VOTE"),
                                             )
                                           ],

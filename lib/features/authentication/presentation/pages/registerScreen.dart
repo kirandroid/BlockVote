@@ -59,181 +59,183 @@ class _RegisterScreenState extends State<RegisterScreen> {
               fontSize: UISize.fontSize(18), color: UIColors.primaryLightBlack),
         ),
       ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: UISize.width(20)),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            TextField(
-              controller: firstNameController,
-              autocorrect: false,
-              autofocus: false,
-              keyboardType: TextInputType.text,
-              textInputAction: TextInputAction.search,
-              textAlignVertical: TextAlignVertical.center,
-              style: StyleText.nunitoMedium.copyWith(
-                  fontSize: UISize.fontSize(13), color: UIColors.darkGray),
-              decoration: InputDecoration(
-                prefixIcon: Icon(
-                  Icons.account_circle,
-                  color: UIColors.primaryDarkTeal,
-                ),
-                isDense: true,
-                filled: true,
-                fillColor: UIColors.lightGray,
-                contentPadding: EdgeInsets.only(
-                    top: UISize.width(14),
-                    bottom: UISize.width(14),
-                    left: UISize.width(15)),
-                hintText: "First Name",
-                hintStyle: StyleText.nunitoMedium.copyWith(
-                    fontSize: UISize.fontSize(14), color: UIColors.greyText),
-                focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(UISize.width(23)),
-                    borderSide: BorderSide(style: BorderStyle.none)),
-                enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(UISize.width(23)),
-                    borderSide: BorderSide(style: BorderStyle.none)),
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            TextField(
-              controller: lastNameController,
-              autocorrect: false,
-              autofocus: false,
-              keyboardType: TextInputType.text,
-              textInputAction: TextInputAction.search,
-              textAlignVertical: TextAlignVertical.center,
-              style: StyleText.nunitoMedium.copyWith(
-                  fontSize: UISize.fontSize(13), color: UIColors.darkGray),
-              decoration: InputDecoration(
-                prefixIcon: Icon(
-                  Icons.account_circle,
-                  color: UIColors.primaryDarkTeal,
-                ),
-                isDense: true,
-                filled: true,
-                fillColor: UIColors.lightGray,
-                contentPadding: EdgeInsets.only(
-                    top: UISize.width(14),
-                    bottom: UISize.width(14),
-                    left: UISize.width(15)),
-                hintText: "Last Name",
-                hintStyle: StyleText.nunitoMedium.copyWith(
-                    fontSize: UISize.fontSize(14), color: UIColors.greyText),
-                focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(UISize.width(23)),
-                    borderSide: BorderSide(style: BorderStyle.none)),
-                enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(UISize.width(23)),
-                    borderSide: BorderSide(style: BorderStyle.none)),
-              ),
-            ),
-            DropdownButton<String>(
-              value: genderValue,
-              elevation: 16,
-              style: StyleText.ralewayMedium.copyWith(
-                  color: UIColors.darkGray, fontSize: UISize.fontSize(14)),
-              underline: Container(
-                  height: 1, color: UIColors.darkGray.withOpacity(0.2)),
-              onChanged: (String newValue) {
-                setState(() {
-                  genderValue = newValue;
-                });
-              },
-              items: <String>[
-                'Male',
-                'Female',
-                'Other',
-              ].map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(
-                    value,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: UISize.width(20)),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              TextField(
+                controller: firstNameController,
+                autocorrect: false,
+                autofocus: false,
+                keyboardType: TextInputType.text,
+                textInputAction: TextInputAction.search,
+                textAlignVertical: TextAlignVertical.center,
+                style: StyleText.nunitoMedium.copyWith(
+                    fontSize: UISize.fontSize(13), color: UIColors.darkGray),
+                decoration: InputDecoration(
+                  prefixIcon: Icon(
+                    Icons.account_circle,
+                    color: UIColors.primaryDarkTeal,
                   ),
-                );
-              }).toList(),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Padding(
-              padding: EdgeInsets.only(bottom: UISize.width(14)),
-              child: Text(
-                "This is your seed phrase which can be used to login to your account, so please keep it safe as it cannot be recovered by any means.",
-                textAlign: TextAlign.center,
-                style: StyleText.ralewaySemiBold.copyWith(
-                    fontSize: UISize.fontSize(14), color: UIColors.darkGray),
+                  isDense: true,
+                  filled: true,
+                  fillColor: UIColors.lightGray,
+                  contentPadding: EdgeInsets.only(
+                      top: UISize.width(14),
+                      bottom: UISize.width(14),
+                      left: UISize.width(15)),
+                  hintText: "First Name",
+                  hintStyle: StyleText.nunitoMedium.copyWith(
+                      fontSize: UISize.fontSize(14), color: UIColors.greyText),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(UISize.width(23)),
+                      borderSide: BorderSide(style: BorderStyle.none)),
+                  enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(UISize.width(23)),
+                      borderSide: BorderSide(style: BorderStyle.none)),
+                ),
               ),
-            ),
-            Container(
-              padding: EdgeInsets.all(UISize.width(12)),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border:
-                      Border.all(color: UIColors.primaryDarkTeal, width: 2)),
-              child: Text(
-                mnemonic,
-                textAlign: TextAlign.center,
+              SizedBox(
+                height: 10,
+              ),
+              TextField(
+                controller: lastNameController,
+                autocorrect: false,
+                autofocus: false,
+                keyboardType: TextInputType.text,
+                textInputAction: TextInputAction.search,
+                textAlignVertical: TextAlignVertical.center,
+                style: StyleText.nunitoMedium.copyWith(
+                    fontSize: UISize.fontSize(13), color: UIColors.darkGray),
+                decoration: InputDecoration(
+                  prefixIcon: Icon(
+                    Icons.account_circle,
+                    color: UIColors.primaryDarkTeal,
+                  ),
+                  isDense: true,
+                  filled: true,
+                  fillColor: UIColors.lightGray,
+                  contentPadding: EdgeInsets.only(
+                      top: UISize.width(14),
+                      bottom: UISize.width(14),
+                      left: UISize.width(15)),
+                  hintText: "Last Name",
+                  hintStyle: StyleText.nunitoMedium.copyWith(
+                      fontSize: UISize.fontSize(14), color: UIColors.greyText),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(UISize.width(23)),
+                      borderSide: BorderSide(style: BorderStyle.none)),
+                  enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(UISize.width(23)),
+                      borderSide: BorderSide(style: BorderStyle.none)),
+                ),
+              ),
+              DropdownButton<String>(
+                value: genderValue,
+                elevation: 16,
                 style: StyleText.ralewayMedium.copyWith(
-                    fontSize: UISize.fontSize(14), color: UIColors.darkGray),
+                    color: UIColors.darkGray, fontSize: UISize.fontSize(14)),
+                underline: Container(
+                    height: 1, color: UIColors.darkGray.withOpacity(0.2)),
+                onChanged: (String newValue) {
+                  setState(() {
+                    genderValue = newValue;
+                  });
+                },
+                items: <String>[
+                  'Male',
+                  'Female',
+                  'Other',
+                ].map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(
+                      value,
+                    ),
+                  );
+                }).toList(),
               ),
-            ),
-            SizedBox(
-              height: UISize.width(16),
-            ),
-            Row(
-              children: <Widget>[
-                Flexible(
-                  flex: 1,
-                  child: CustomButton(
-                    buttonColor: UIColors.primaryPink,
-                    buttonRadius: BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        bottomLeft: Radius.circular(10)),
-                    title: "Copy",
-                    verticalPadding: UISize.width(16),
-                    onPressed: () {
-                      Clipboard.setData(new ClipboardData(text: mnemonic));
-                      Toast().showToast(
-                          bgColor: UIColors.primaryDarkTeal,
-                          context: context,
-                          message: "Menomic Copied!");
-                    },
-                  ),
+              SizedBox(
+                height: 10,
+              ),
+              Padding(
+                padding: EdgeInsets.only(bottom: UISize.width(14)),
+                child: Text(
+                  "This is your seed phrase which can be used to login to your account, so please keep it safe as it cannot be recovered by any means.",
+                  textAlign: TextAlign.center,
+                  style: StyleText.ralewaySemiBold.copyWith(
+                      fontSize: UISize.fontSize(14), color: UIColors.darkGray),
                 ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: UISize.width(5)),
-                  child: Container(
-                    width: 1,
-                    height: UISize.width(50),
-                    color: UIColors.lightGray,
-                  ),
+              ),
+              Container(
+                padding: EdgeInsets.all(UISize.width(12)),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border:
+                        Border.all(color: UIColors.primaryDarkTeal, width: 2)),
+                child: Text(
+                  mnemonic,
+                  textAlign: TextAlign.center,
+                  style: StyleText.ralewayMedium.copyWith(
+                      fontSize: UISize.fontSize(14), color: UIColors.darkGray),
                 ),
-                Flexible(
-                  flex: 1,
-                  child: CustomButton(
-                    buttonColor: UIColors.primaryDarkTeal,
-                    buttonRadius: BorderRadius.only(
-                        topRight: Radius.circular(10),
-                        bottomRight: Radius.circular(10)),
-                    title: "Register",
-                    verticalPadding: UISize.width(16),
-                    onPressed: () {
-                      _authBloc.add(RegisterUser(
-                          firstName: firstNameController.text.trim(),
-                          lastName: lastNameController.text.trim(),
-                          seedPhrase: mnemonic,
-                          gender: genderValue,
-                          context: context));
-                    },
+              ),
+              SizedBox(
+                height: UISize.width(16),
+              ),
+              Row(
+                children: <Widget>[
+                  Flexible(
+                    flex: 1,
+                    child: CustomButton(
+                      buttonColor: UIColors.primaryPink,
+                      buttonRadius: BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          bottomLeft: Radius.circular(10)),
+                      title: "Copy",
+                      verticalPadding: UISize.width(16),
+                      onPressed: () {
+                        Clipboard.setData(new ClipboardData(text: mnemonic));
+                        Toast().showToast(
+                            bgColor: UIColors.primaryDarkTeal,
+                            context: context,
+                            message: "Menomic Copied!");
+                      },
+                    ),
                   ),
-                )
-              ],
-            )
-          ],
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: UISize.width(5)),
+                    child: Container(
+                      width: 1,
+                      height: UISize.width(50),
+                      color: UIColors.lightGray,
+                    ),
+                  ),
+                  Flexible(
+                    flex: 1,
+                    child: CustomButton(
+                      buttonColor: UIColors.primaryDarkTeal,
+                      buttonRadius: BorderRadius.only(
+                          topRight: Radius.circular(10),
+                          bottomRight: Radius.circular(10)),
+                      title: "Register",
+                      verticalPadding: UISize.width(16),
+                      onPressed: () {
+                        _authBloc.add(RegisterUser(
+                            firstName: firstNameController.text.trim(),
+                            lastName: lastNameController.text.trim(),
+                            seedPhrase: mnemonic,
+                            gender: genderValue,
+                            context: context));
+                      },
+                    ),
+                  )
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );
