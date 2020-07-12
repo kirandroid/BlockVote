@@ -36,7 +36,7 @@ class CreateElectionBloc
         final String url = (await downloadUrl.ref.getDownloadURL());
         print(url);
       } else {
-        imageName = 'blockvote.png';
+        imageName = 'blockvote2.png';
       }
 
       for (var i = 0; i < event.candidates.length; i++) {

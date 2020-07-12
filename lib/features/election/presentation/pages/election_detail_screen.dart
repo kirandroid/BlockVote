@@ -12,6 +12,9 @@ import 'package:evoting/features/election/domain/entities/candidate_response.dar
 import 'package:evoting/features/election/domain/entities/election_response.dart';
 import 'package:evoting/features/election/presentation/bloc/election_detail_bloc/election_detail_bloc.dart';
 import 'package:evoting/features/election/presentation/bloc/election_list_bloc/election_list_bloc.dart';
+import 'package:evoting/features/election/presentation/pages/tab/election_tab.dart';
+import 'package:evoting/features/election/presentation/pages/tab/result_tab.dart';
+import 'package:evoting/features/election/presentation/pages/tab/voter_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:web3dart/web3dart.dart';
@@ -24,11 +27,11 @@ class ElectionDetailScreen extends StatefulWidget {
   _ElectionDetailScreenState createState() => _ElectionDetailScreenState();
 }
 
-class _ElectionDetailScreenState extends State<ElectionDetailScreen> {
+class _ElectionDetailScreenState extends State<ElectionDetailScreen>
+    with SingleTickerProviderStateMixin {
+  TabController _tabController;
   EthereumAddress loggedInUser;
   ElectionDetailBloc _electionDetailBloc = sl<ElectionDetailBloc>();
-  int candidateIndex;
-  String candidateId = '';
   @override
   void initState() {
     getAnElection();
@@ -61,386 +64,194 @@ class _ElectionDetailScreenState extends State<ElectionDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: goBack,
-      child: Scaffold(
-          body: BlocBuilder<ElectionDetailBloc, ElectionDetailState>(
-              bloc: this._electionDetailBloc,
-              builder: (BuildContext context, ElectionDetailState state) {
-                if (state is FetchElectionLoading) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if (state is FetchAnElectionCompleted) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Stack(
-                        children: [
-                          CachedNetworkImage(
-                            height: UISize.width(100),
-                            imageUrl: AppConfig().imageUrlFormat(
-                                folderName: "ElectionCover",
-                                imageName: state.election.electionCover),
-                            fit: BoxFit.cover,
-                            placeholder: (context, url) => ShimmerEffect(
+    return DefaultTabController(
+      length: 3,
+      child: WillPopScope(
+        onWillPop: goBack,
+        child: Scaffold(
+            body: BlocBuilder<ElectionDetailBloc, ElectionDetailState>(
+                bloc: this._electionDetailBloc,
+                builder: (BuildContext context, ElectionDetailState state) {
+                  if (state is FetchElectionLoading) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (state is FetchAnElectionCompleted) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Stack(
+                          children: [
+                            CachedNetworkImage(
                               height: UISize.width(100),
-                            ),
-                            errorWidget: (context, url, error) => ShimmerEffect(
-                              height: UISize.width(100),
-                            ),
-                            imageBuilder: (context, imageProvider) => Container(
-                              height: UISize.width(100),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(8),
-                                  topRight: Radius.circular(8),
-                                ),
-                                image: DecorationImage(
-                                  image: imageProvider,
-                                  fit: BoxFit.cover,
+                              imageUrl: AppConfig().imageUrlFormat(
+                                  folderName: "ElectionCover",
+                                  imageName: state.election.electionCover),
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) => ShimmerEffect(
+                                height: UISize.width(100),
+                              ),
+                              errorWidget: (context, url, error) =>
+                                  ShimmerEffect(
+                                height: UISize.width(100),
+                              ),
+                              imageBuilder: (context, imageProvider) =>
+                                  Container(
+                                height: UISize.width(100),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(8),
+                                    topRight: Radius.circular(8),
+                                  ),
+                                  image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          Positioned(
-                              top: 0,
-                              bottom: 0,
-                              child: IconButton(
-                                icon: Icon(
-                                  Icons.chevron_left,
-                                  size: 40,
-                                  color: UIColors.primaryWhite,
-                                ),
-                                onPressed: goBack,
-                              ))
-                        ],
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: UISize.width(20),
-                            vertical: UISize.width(10)),
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  state.election.electionName,
-                                  style: StyleText.ralewayBold.copyWith(
-                                      letterSpacing: 1,
-                                      color: UIColors.darkGray,
-                                      fontSize: UISize.fontSize(14)),
-                                ),
-                                loggedInUser == state.election.creatorId
-                                    ? Container()
-                                    : RaisedButton(
-                                        color: state.joinButtonColor,
-                                        onPressed: state.election.status
-                                                    .shouldWarn ||
-                                                state.election.pendingVoter
-                                                    .contains(loggedInUser) ||
-                                                state.election.approvedVoter
-                                                    .contains(loggedInUser)
-                                            ? () {
-                                                Toast().showToast(
-                                                    context: context,
-                                                    title: "Error",
-                                                    message:
-                                                        "Cannot join the election");
-                                              }
-                                            : () {
-                                                _electionDetailBloc.add(
-                                                    JoinAnElection(
-                                                        context: context,
-                                                        electionId:
-                                                            state.election
-                                                                .electionId,
-                                                        loggedInUser:
-                                                            loggedInUser,
-                                                        voterList: state
-                                                            .election
-                                                            .pendingVoter));
-                                              },
-                                        child: Text(
-                                          state.joinButtonText,
-                                          style: StyleText.ralewayBold.copyWith(
-                                              letterSpacing: 1,
-                                              color: UIColors.primaryWhite,
-                                              fontSize: UISize.fontSize(14)),
-                                        )),
-                              ],
-                            ),
+                            Positioned(
+                                top: 0,
+                                bottom: 0,
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.chevron_left,
+                                    size: 40,
+                                    color: UIColors.primaryWhite,
+                                  ),
+                                  onPressed: goBack,
+                                ))
                           ],
                         ),
-                      ),
-                      Expanded(
-                        child: Padding(
+                        Padding(
                           padding: EdgeInsets.symmetric(
-                              horizontal: UISize.width(20)),
+                              horizontal: UISize.width(20),
+                              vertical: UISize.width(10)),
                           child: Column(
                             children: [
-                              Flexible(
-                                flex: 1,
-                                child: Card(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                            top: UISize.width(20),
-                                            left: UISize.width(20),
-                                            right: UISize.width(20)),
-                                        child: Text(
-                                          "Pending",
-                                          style: StyleText.nunitoBold.copyWith(
-                                              color: UIColors.darkGray,
-                                              letterSpacing: 1,
-                                              fontSize: UISize.fontSize(18)),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: ListView.builder(
-                                            itemCount: state
-                                                .election.pendingVoter.length,
-                                            itemBuilder: (context, index) {
-                                              EthereumAddress voter = state
-                                                  .election.pendingVoter[index];
-                                              if (state.election.pendingVoter
-                                                  .isEmpty) {
-                                                return Center(
-                                                    child:
-                                                        CircularProgressIndicator());
-                                              } else {
-                                                return Row(
-                                                  children: [
-                                                    Expanded(
-                                                      child: ListTile(
-                                                        title: Text(
-                                                            voter.toString()),
-                                                      ),
-                                                    ),
-                                                    state.election.creatorId ==
-                                                            loggedInUser
-                                                        ? IconButton(
-                                                            icon: Icon(
-                                                                Icons.done),
-                                                            onPressed: () {
-                                                              _electionDetailBloc
-                                                                  .add(ApproveVoter(
-                                                                      electionId: state
-                                                                          .election
-                                                                          .electionId,
-                                                                      voterId:
-                                                                          voter));
-                                                            })
-                                                        : Container(),
-                                                  ],
-                                                );
-                                              }
-                                            }),
-                                      ),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              "Approved",
-                                              style: StyleText.nunitoBold
-                                                  .copyWith(
-                                                      color: UIColors.darkGray,
-                                                      letterSpacing: 1,
-                                                      fontSize:
-                                                          UISize.fontSize(18)),
-                                            ),
-                                            Expanded(
-                                              child: ListView.builder(
-                                                  itemCount: state.election
-                                                      .approvedVoter.length,
-                                                  itemBuilder:
-                                                      (context, index) {
-                                                    EthereumAddress voter =
-                                                        state.election
-                                                                .approvedVoter[
-                                                            index];
-                                                    if (state
-                                                        .election
-                                                        .approvedVoter
-                                                        .isEmpty) {
-                                                      return Center(
-                                                          child:
-                                                              CircularProgressIndicator());
-                                                    } else {
-                                                      return ListTile(
-                                                        title: Text(
-                                                            voter.toString()),
-                                                      );
-                                                    }
-                                                  }),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    state.election.electionName,
+                                    style: StyleText.ralewayBold.copyWith(
+                                        letterSpacing: 1,
+                                        color: UIColors.darkGray,
+                                        fontSize: UISize.fontSize(14)),
                                   ),
-                                ),
-                              ),
-                              Flexible(
-                                flex: 1,
-                                child: Card(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                            top: UISize.width(20),
-                                            left: UISize.width(20),
-                                            right: UISize.width(20)),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              "Candidates",
-                                              style: StyleText.nunitoBold
-                                                  .copyWith(
-                                                      color: UIColors.darkGray,
-                                                      letterSpacing: 1,
-                                                      fontSize:
-                                                          UISize.fontSize(18)),
-                                            ),
-                                            RaisedButton(
-                                              onPressed: state.election
-                                                          .approvedVoter
-                                                          .contains(
-                                                              loggedInUser) &&
-                                                      state.election.status
-                                                              .status ==
-                                                          'VOTING' &&
-                                                      !state.election.votedVoter
-                                                          .contains(
-                                                              loggedInUser)
-                                                  ? () {
-                                                      _electionDetailBloc.add(
-                                                          VoteCandidate(
-                                                              context: context,
-                                                              candidateId:
-                                                                  candidateId,
-                                                              electionId: state
-                                                                  .election
-                                                                  .electionId,
-                                                              voterId:
-                                                                  loggedInUser));
-                                                    }
-                                                  : () {
-                                                      Toast().showToast(
+                                  loggedInUser == state.election.creatorId
+                                      ? Container()
+                                      : RaisedButton(
+                                          color: state.joinButtonColor,
+                                          onPressed: state.election.status
+                                                      .shouldWarn ||
+                                                  state.election.pendingVoter
+                                                      .contains(loggedInUser) ||
+                                                  state.election.approvedVoter
+                                                      .contains(loggedInUser)
+                                              ? () {
+                                                  Toast().showToast(
+                                                      context: context,
+                                                      title: "Error",
+                                                      message:
+                                                          "Cannot join the election");
+                                                }
+                                              : () {
+                                                  _electionDetailBloc.add(
+                                                      JoinAnElection(
                                                           context: context,
-                                                          title: "Error",
-                                                          message:
-                                                              "User cannot vote now!");
-                                                    },
-                                              child: Text("VOTE"),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: ListView.builder(
-                                            physics: BouncingScrollPhysics(),
-                                            itemCount: state.candidates.length,
-                                            itemBuilder: (context, index) {
-                                              CandidateResponse candidate =
-                                                  state.candidates[index];
-                                              if (state.candidates.isEmpty) {
-                                                return Center(
-                                                    child:
-                                                        CircularProgressIndicator());
-                                              } else {
-                                                return Row(
-                                                  children: [
-                                                    Expanded(
-                                                      child: InkWell(
-                                                        onTap: () {
-                                                          setState(() {
-                                                            candidateIndex =
-                                                                index;
-                                                            candidateId =
-                                                                candidate
-                                                                    .candidateId;
-                                                          });
-                                                        },
-                                                        child: Container(
-                                                          color:
-                                                              candidateIndex ==
-                                                                      index
-                                                                  ? UIColors
-                                                                      .primaryDarkTeal
-                                                                  : Colors
-                                                                      .transparent,
-                                                          padding:
-                                                              EdgeInsets.all(
-                                                                  20),
-                                                          child: Text(
-                                                            candidate
-                                                                .candidateName,
-                                                            style: StyleText
-                                                                .ralewaySemiBold
-                                                                .copyWith(
-                                                                    color: candidateIndex ==
-                                                                            index
-                                                                        ? UIColors
-                                                                            .primaryWhite
-                                                                        : UIColors
-                                                                            .darkGray,
-                                                                    fontSize: UISize
-                                                                        .fontSize(
-                                                                            14)),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    IconButton(
-                                                        icon: Icon(Icons
-                                                            .chevron_right),
-                                                        onPressed: () {
-                                                          ExtendedNavigator.of(
-                                                                  context)
-                                                              .pushNamed(
-                                                                  Routes
-                                                                      .candidateInfoScreen,
-                                                                  arguments: CandidateInfoScreenArguments(
-                                                                      candidateId:
-                                                                          candidate
-                                                                              .candidateId));
-                                                        })
-                                                  ],
-                                                );
-                                              }
-                                            }),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                                                          electionId: state
+                                                              .election
+                                                              .electionId,
+                                                          loggedInUser:
+                                                              loggedInUser,
+                                                          voterList: state
+                                                              .election
+                                                              .pendingVoter));
+                                                },
+                                          child: Text(
+                                            state.joinButtonText,
+                                            style: StyleText.ralewayBold
+                                                .copyWith(
+                                                    letterSpacing: 1,
+                                                    color:
+                                                        UIColors.primaryWhite,
+                                                    fontSize:
+                                                        UISize.fontSize(14)),
+                                          )),
+                                ],
                               ),
                             ],
                           ),
                         ),
-                      ),
-                    ],
-                  );
-                } else if (state is FetchElectionError) {
-                  return Center(
-                    child: Text(state.errorMessage),
-                  );
-                } else {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-              })),
+                        Container(
+                          height: UISize.width(35),
+                          color: UIColors.primaryWhite,
+                          alignment: Alignment.center,
+                          child: TabBar(
+                            isScrollable: true,
+                            indicatorSize: TabBarIndicatorSize.tab,
+                            indicatorWeight: 3,
+                            controller: _tabController,
+                            unselectedLabelColor: UIColors.mediumGray,
+                            labelColor: UIColors.primaryDarkTeal,
+                            labelStyle: StyleText.ralewayMedium
+                                .copyWith(fontSize: UISize.fontSize(12)),
+                            unselectedLabelStyle: StyleText.ralewayMedium
+                                .copyWith(fontSize: UISize.fontSize(12)),
+                            indicator: UnderlineTabIndicator(
+                                borderSide: BorderSide(
+                                    width: 3.0,
+                                    color: UIColors.primaryDarkTeal),
+                                insets: EdgeInsets.symmetric(
+                                    horizontal: UISize.width(16))),
+                            tabs: [
+                              Tab(
+                                  child: Text(
+                                "Voters",
+                              )),
+                              Tab(
+                                  child: Text(
+                                "Election",
+                              )),
+                              Tab(
+                                  child: Text(
+                                "Result",
+                              )),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: TabBarView(
+                            physics: const NeverScrollableScrollPhysics(),
+                            controller: _tabController,
+                            children: <Widget>[
+                              VoterTab(
+                                electionResponse: state,
+                                loggedInUser: loggedInUser,
+                              ),
+                              ElectionTab(
+                                electionResponse: state,
+                                loggedInUser: loggedInUser,
+                              ),
+                              ResultTab()
+                            ],
+                          ),
+                        ),
+                      ],
+                    );
+                  } else if (state is FetchElectionError) {
+                    return Center(
+                      child: Text(state.errorMessage),
+                    );
+                  } else {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                })),
+      ),
     );
   }
 }

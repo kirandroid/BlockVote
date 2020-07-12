@@ -8,10 +8,15 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+import 'package:syncfusion_flutter_core/core.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initDI();
   await Hive.initFlutter();
+
+  SyncfusionLicense.registerLicense(
+      "NT8mJyc2IWhia31hfWN9Z2doYmF8YGJ8ampqanNiYmlmamlmanMDHmgjITI3OzI9Mj00Mjg6ITI9EzQ+Mjo/fTA8Pg==");
 
   // Create storage
   final storage = new FlutterSecureStorage();
