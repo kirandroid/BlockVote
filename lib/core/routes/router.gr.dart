@@ -20,6 +20,7 @@ import 'package:evoting/features/election/presentation/pages/candidate_info_scre
 import 'package:evoting/features/home/presentation/pages/create_post_screen.dart';
 import 'package:evoting/features/home/presentation/pages/post_detail_screen.dart';
 import 'package:evoting/features/profile/presentation/pages/profile_screen.dart';
+import 'package:evoting/features/election/presentation/pages/qr_scanner_page.dart';
 
 abstract class Routes {
   static const exitConfirmScreen = '/';
@@ -34,6 +35,7 @@ abstract class Routes {
   static const createPostScreen = '/create-post-screen';
   static const postDetailScreen = '/post-detail-screen';
   static const profileScreen = '/profile-screen';
+  static const userQRScannerPage = '/user-qr-scanner-page';
   static const all = {
     exitConfirmScreen,
     getStartedScreen,
@@ -47,6 +49,7 @@ abstract class Routes {
     createPostScreen,
     postDetailScreen,
     profileScreen,
+    userQRScannerPage,
   };
 }
 
@@ -62,6 +65,7 @@ class Router extends RouterBase {
         Routes.createPostScreen: [AuthGuard],
         Routes.postDetailScreen: [AuthGuard],
         Routes.profileScreen: [AuthGuard],
+        Routes.userQRScannerPage: [AuthGuard],
       };
   @Deprecated('call ExtendedNavigator.ofRouter<Router>() directly')
   static ExtendedNavigatorState get navigator =>
@@ -167,6 +171,18 @@ class Router extends RouterBase {
           settings: settings,
           transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
         );
+      case Routes.userQRScannerPage:
+        if (hasInvalidArgs<UserQRScannerPageArguments>(args)) {
+          return misTypedArgsRoute<UserQRScannerPageArguments>(args);
+        }
+        final typedArgs =
+            args as UserQRScannerPageArguments ?? UserQRScannerPageArguments();
+        return PageRouteBuilder<dynamic>(
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              UserQRScannerPage(key: typedArgs.key),
+          settings: settings,
+          transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
+        );
       default:
         return unknownRoutePage(settings.name);
     }
@@ -201,4 +217,10 @@ class PostDetailScreenArguments {
 class ProfileScreenArguments {
   final String userId;
   ProfileScreenArguments({@required this.userId});
+}
+
+//UserQRScannerPage arguments holder class
+class UserQRScannerPageArguments {
+  final Key key;
+  UserQRScannerPageArguments({this.key});
 }

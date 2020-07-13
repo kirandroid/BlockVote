@@ -11925,6 +11925,38 @@
     "version": "0.6.0+commit.26b70077.Emscripten.clang"
   },
   "networks": {
+    "3": {
+      "events": {
+        "0x68b4b008f51dc7805518445e46dcfaa317fe6eb383c51567227d056d12bd39a5": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "candidateId",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "voteCount",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "candidateName",
+              "type": "string"
+            }
+          ],
+          "name": "ElectionResult",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x73795eF2B2A80f5EeC0185E58d52117B38E9f98E",
+      "transactionHash": "0xad67e0f6457ba0f855574c8da35e8b30b8cceaff3e43c69ecadaa372ca538b53"
+    },
     "5777": {
       "events": {
         "0xeb2a7fd409db2960face170db7010075f81d9a3c624c6b1a652b1af28cbc04f4": {
@@ -12027,12 +12059,12 @@
         }
       },
       "links": {},
-      "address": "0x18A5dd8001e9be53F61703C3A58F5BEF45f54a98",
-      "transactionHash": "0xd4471663544e63fe926ba48e0f62596f328b1925286d7030e21ba11c2f5837d8"
+      "address": "0xF838a7548c3ab24C6e2Aa3Ea55878a6FbFb058Ea",
+      "transactionHash": "0x540d8928a7425c1b92a7e3d52975d3acd5778484450ceb7e08d7990c1f84876a"
     }
   },
   "schemaVersion": "3.2.0",
-  "updatedAt": "2020-07-13T11:33:47.803Z",
+  "updatedAt": "2020-07-13T13:41:06.740Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}

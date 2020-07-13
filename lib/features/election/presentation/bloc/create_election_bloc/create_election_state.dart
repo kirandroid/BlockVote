@@ -7,7 +7,10 @@ class CreateElectionInitial extends CreateElectionState {}
 
 class CreateElectionLoading extends CreateElectionState {}
 
-class CreateElectionCompleted extends CreateElectionState {}
+class CreateElectionCompleted extends CreateElectionState {
+  final String electionId;
+  CreateElectionCompleted({this.electionId});
+}
 
 class CreateElectionError extends CreateElectionState {
   final String errorMessage;

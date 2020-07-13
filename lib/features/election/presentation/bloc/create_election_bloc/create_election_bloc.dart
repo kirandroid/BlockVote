@@ -76,7 +76,7 @@ class CreateElectionBloc
             .updateData({
           "myElections": FieldValue.arrayUnion([electionId])
         });
-        yield CreateElectionCompleted();
+        yield CreateElectionCompleted(electionId: electionId);
       } else {
         yield CreateElectionError(
             errorMessage: "Some error occurred while creating election!");

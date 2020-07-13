@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:evoting/core/widgets/custom_dialog.dart';
 import 'package:evoting/di.dart';
 import 'package:evoting/features/election/domain/entities/candidate_response.dart';
 import 'package:evoting/features/election/presentation/bloc/create_election_bloc/create_election_bloc.dart';
@@ -12,6 +13,7 @@ import 'package:evoting/core/utils/text_style.dart';
 import 'package:evoting/core/widgets/calender_popup_view.dart';
 import 'package:evoting/core/widgets/election_cover_image_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:uuid/uuid.dart';
 
 class CreateElectionScreen extends StatefulWidget {
@@ -75,8 +77,21 @@ class _CreateElectionScreenState extends State<CreateElectionScreen> {
             bloc: this._createElectionBloc,
             listener: (BuildContext context, CreateElectionState state) {
               if (state is CreateElectionCompleted) {
-                sl<ElectionListBloc>().add(GetAllElection());
-                ExtendedNavigator.of(context).pop();
+                CustomDialog(
+                    context: context,
+                    title: "Election QRCode",
+                    buttonTitle: "Okay",
+                    customWidget: QrImage(
+                      data: state.electionId,
+                      version: QrVersions.auto,
+                      size: 320,
+                      gapless: false,
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      sl<ElectionListBloc>().add(GetAllElection());
+                      ExtendedNavigator.of(context).pop();
+                    });
               }
             },
             builder: (BuildContext context, CreateElectionState state) {

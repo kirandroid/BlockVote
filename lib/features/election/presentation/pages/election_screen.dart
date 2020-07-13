@@ -53,12 +53,29 @@ class _ElectionScreenState extends State<ElectionScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              "ALL ELECTIONS",
-              style: StyleText.nunitoMedium.copyWith(
-                  letterSpacing: 1,
-                  fontSize: UISize.fontSize(24),
-                  color: UIColors.darkGray),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  "ALL ELECTIONS",
+                  style: StyleText.nunitoMedium.copyWith(
+                      letterSpacing: 1,
+                      fontSize: UISize.fontSize(20),
+                      color: UIColors.darkGray),
+                ),
+                RaisedButton(
+                    color: UIColors.primaryDarkTeal,
+                    onPressed: () {
+                      ExtendedNavigator.of(context)
+                          .pushNamed(Routes.createElectionScreen);
+                    },
+                    child: Text(
+                      "Create Election",
+                      style: StyleText.ralewaySemiBold.copyWith(
+                        color: UIColors.primaryWhite,
+                      ),
+                    ))
+              ],
             ),
             SizedBox(
               height: 20,
@@ -292,11 +309,41 @@ class _ElectionScreenState extends State<ElectionScreen> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton:
+          // Container(
+          //   margin: EdgeInsets.only(right: UISize.width(20)),
+          //   height: UISize.width(46),
+          //   width: UISize.width(46),
+          //   decoration: BoxDecoration(
+          //       color: UIColors.primaryDarkTeal, shape: BoxShape.circle),
+          //   child: Material(
+          //     type: MaterialType.transparency,
+          //     child: InkWell(
+          //       borderRadius: BorderRadius.circular(25),
+          //       onTap: () {
+          //         ExtendedNavigator.of(context)
+          //             .pushNamed(Routes.userQRScannerPage);
+          //       },
+          //       child: Container(
+          //         child: Icon(
+          //           Icons.select_all,
+          //           size: 18,
+          //           color: UIColors.primaryWhite,
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // )
+
+          FloatingActionButton(
         onPressed: () {
-          ExtendedNavigator.of(context).pushNamed(Routes.createElectionScreen);
+          ExtendedNavigator.of(context).pushNamed(Routes.userQRScannerPage);
         },
-        label: Text("Create Election"),
+        child: Icon(
+          Icons.select_all,
+          size: 24,
+          color: UIColors.primaryWhite,
+        ),
       ),
     );
   }
