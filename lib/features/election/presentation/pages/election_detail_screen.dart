@@ -5,6 +5,7 @@ import 'package:evoting/core/utils/app_config.dart';
 import 'package:evoting/core/utils/colors.dart';
 import 'package:evoting/core/utils/sizes.dart';
 import 'package:evoting/core/utils/text_style.dart';
+import 'package:evoting/core/widgets/custom_dialog.dart';
 import 'package:evoting/core/widgets/shimmerEffect.dart';
 import 'package:evoting/core/widgets/toast.dart';
 import 'package:evoting/di.dart';
@@ -17,6 +18,7 @@ import 'package:evoting/features/election/presentation/pages/tab/result_tab.dart
 import 'package:evoting/features/election/presentation/pages/tab/voter_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:web3dart/web3dart.dart';
 
 class ElectionDetailScreen extends StatefulWidget {
@@ -60,6 +62,22 @@ class _ElectionDetailScreenState extends State<ElectionDetailScreen>
   Future<bool> goBack() {
     sl<ElectionListBloc>().add(GetAllElection());
     Navigator.pop(context);
+  }
+
+  void generateQR(String electionId) {
+    CustomDialog(
+        context: context,
+        title: "Election QRCode",
+        buttonTitle: "Okay",
+        customWidget: QrImage(
+          data: electionId,
+          version: QrVersions.auto,
+          size: 320,
+          gapless: false,
+        ),
+        onPressed: () {
+          Navigator.of(context).pop();
+        });
   }
 
   @override
@@ -120,6 +138,19 @@ class _ElectionDetailScreenState extends State<ElectionDetailScreen>
                                     color: UIColors.primaryWhite,
                                   ),
                                   onPressed: goBack,
+                                )),
+                            Positioned(
+                                top: 0,
+                                bottom: 0,
+                                right: 0,
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.select_all,
+                                    size: 30,
+                                    color: UIColors.primaryWhite,
+                                  ),
+                                  onPressed: () =>
+                                      generateQR(state.election.electionId),
                                 ))
                           ],
                         ),
