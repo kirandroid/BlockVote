@@ -235,7 +235,9 @@ class _ElectionDetailScreenState extends State<ElectionDetailScreen>
                                 electionResponse: state,
                                 loggedInUser: loggedInUser,
                               ),
-                              ResultTab()
+                              ResultTab(
+                                electionResponse: state,
+                              )
                             ],
                           ),
                         ),

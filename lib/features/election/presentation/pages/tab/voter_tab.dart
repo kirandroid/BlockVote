@@ -42,8 +42,10 @@ class _VoterTabState extends State<VoterTab> {
                             fontSize: UISize.fontSize(16))),
                   ),
                   widget.electionResponse.election.pendingVoter.length == 0
-                      ? EmptyScreen(
-                          emptyMsg: "No Pending Voters",
+                      ? Expanded(
+                          child: EmptyScreen(
+                            emptyMsg: "No Pending Voters",
+                          ),
                         )
                       : Expanded(
                           child: ListView.builder(
@@ -152,8 +154,10 @@ class _VoterTabState extends State<VoterTab> {
                             fontSize: UISize.fontSize(16))),
                   ),
                   widget.electionResponse.election.approvedVoter.length == 0
-                      ? EmptyScreen(
-                          emptyMsg: "No Approved Voters",
+                      ? Expanded(
+                          child: EmptyScreen(
+                            emptyMsg: "No Approved Voters",
+                          ),
                         )
                       : Expanded(
                           child: ListView.builder(
