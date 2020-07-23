@@ -12059,12 +12059,12 @@
         }
       },
       "links": {},
-      "address": "0xF838a7548c3ab24C6e2Aa3Ea55878a6FbFb058Ea",
-      "transactionHash": "0x540d8928a7425c1b92a7e3d52975d3acd5778484450ceb7e08d7990c1f84876a"
+      "address": "0x6823443ad7778D301B399afE53032d9692772c7D",
+      "transactionHash": "0xd8dfd2cff750722b807648c017205fb99dd5c125ae09c108653975ce5e5bfcc5"
     }
   },
   "schemaVersion": "3.2.0",
-  "updatedAt": "2020-07-13T13:41:06.740Z",
+  "updatedAt": "2020-07-13T18:43:43.299Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}

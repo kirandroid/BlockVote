@@ -22,28 +22,16 @@ dependencies:
   web3dart: ^1.2.3
   bip39: ^1.0.3
   hex: ^0.1.2
-  tweetnacl: ^0.3.1
   hive: ^1.4.1+1
   hive_flutter: ^0.3.0+2
   flutter_secure_storage: ^3.3.3
   path_provider: ^1.6.10
-  cupertino_icons: ^0.1.2
-
   cached_network_image: ^2.2.0+1
   shimmer: ^1.0.1
   flutter_screenutil: ^1.1.0
-  # Service locator
   get_it: ^4.0.2
-  # Bloc for state management
   flutter_bloc: ^4.0.0
-  # Value equality
   equatable: ^1.2.0
-  # Functional programming things
-  dartz: ^0.9.1
-  # Remote API
-  connectivity: ^0.4.8+6
-  data_connection_checker: ^0.3.4
-  # Image picker anc cropper
   image_picker: ^0.6.7+1
   image_cropper: ^1.2.2
   flushbar: ^1.10.4
@@ -51,7 +39,6 @@ dependencies:
   google_fonts: ^1.1.0
   transformer_page_view: ^0.1.6
   flutter_page_indicator: ^0.0.3
-  dio: ^3.0.9
   outline_material_icons: ^0.1.1
   permission_handler: ^3.1.0
   android_intent: ^0.3.3+1

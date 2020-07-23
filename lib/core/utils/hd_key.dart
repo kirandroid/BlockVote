@@ -5,7 +5,6 @@
 
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:tweetnacl/tweetnacl.dart' as ED25519;
 import 'package:pointycastle/digests/sha512.dart';
 import 'package:pointycastle/macs/hmac.dart';
 import 'package:pointycastle/api.dart';
@@ -46,18 +45,6 @@ class _HDKey {
   KeyData getMasterKeyFromSeed(String seed) {
     final seedBytes = HEX.decode(seed);
     return this._getKeys(seedBytes, _HDKey._curveBytes);
-  }
-
-  Uint8List getBublickKey(Uint8List privateKey, [bool withZeroByte = true]) {
-    final signature = ED25519.Signature.keyPair_fromSeed(privateKey);
-    if (withZeroByte == true) {
-      Uint8List dataBytes = Uint8List(33);
-      dataBytes[0] = 0x00;
-      dataBytes.setRange(1, 33, signature.publicKey);
-      return dataBytes;
-    } else {
-      return signature.publicKey;
-    }
   }
 
   KeyData derivePath(String path, String seed) {
