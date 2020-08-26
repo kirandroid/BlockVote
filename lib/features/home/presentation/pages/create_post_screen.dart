@@ -26,6 +26,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   bool isUploading = false;
   final FocusNode postFieldFocus = FocusNode();
   TextEditingController postTextFieldController = TextEditingController();
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -54,8 +55,16 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     return BlocConsumer(
       bloc: _createPostBloc,
       listener: (BuildContext context, CreatePostState state) {
-        if (state is CreatePostCompleted) {
+        if (state is CreatePostLoading) {
+          setState(() {
+            isLoading = true;
+          });
+        } else if (state is CreatePostCompleted) {
           Navigator.of(context).pop();
+        } else {
+          setState(() {
+            isLoading = false;
+          });
         }
       },
       builder: (BuildContext context, CreatePostState state) {
@@ -92,7 +101,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 10),
                   alignment: Alignment.center,
-                  child: isUploading
+                  child: isLoading
                       ? CircularProgressIndicator()
                       : Text(
                           "Post",

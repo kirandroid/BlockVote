@@ -64,8 +64,8 @@ class _ElectionDetailScreenState extends State<ElectionDetailScreen>
     Navigator.pop(context);
   }
 
-  void generateQR(String electionId) {
-    CustomDialog(
+  generateQR(String electionId) {
+    return CustomDialog(
         context: context,
         title: "Election QRCode",
         buttonTitle: "Okay",
@@ -144,14 +144,32 @@ class _ElectionDetailScreenState extends State<ElectionDetailScreen>
                                 bottom: 0,
                                 right: 0,
                                 child: IconButton(
-                                  icon: Icon(
-                                    Icons.select_all,
-                                    size: 30,
-                                    color: UIColors.primaryWhite,
-                                  ),
-                                  onPressed: () =>
-                                      generateQR(state.election.electionId),
-                                ))
+                                    icon: Icon(
+                                      Icons.select_all,
+                                      size: 30,
+                                      color: UIColors.primaryWhite,
+                                    ),
+                                    onPressed: () {
+                                      CustomDialog(
+                                          context: context,
+                                          title: "Election QRCode",
+                                          buttonTitle: "Okay",
+                                          customWidget: Container(
+                                            height: 320,
+                                            width: 320,
+                                            child: QrImage(
+                                              data: state.election.electionId,
+                                              version: QrVersions.auto,
+                                              size: 320,
+                                              gapless: false,
+                                            ),
+                                          ),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          });
+                                    }
+                                    // generateQR(state.election.electionId),
+                                    ))
                           ],
                         ),
                         Padding(

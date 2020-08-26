@@ -9,6 +9,7 @@ class CustomButton extends StatefulWidget {
   final BorderRadiusGeometry buttonRadius;
   final Color buttonColor;
   final double verticalPadding;
+  final bool isLoading;
 
   const CustomButton(
       {Key key,
@@ -16,7 +17,8 @@ class CustomButton extends StatefulWidget {
       this.onPressed,
       this.buttonRadius,
       this.buttonColor,
-      this.verticalPadding})
+      this.verticalPadding,
+      this.isLoading = false})
       : super(key: key);
 
   @override
@@ -43,13 +45,15 @@ class _CustomButtonState extends State<CustomButton> {
             padding: EdgeInsets.symmetric(
                 vertical: widget.verticalPadding ?? UISize.width(20)),
             alignment: Alignment.center,
-            child: Text(
-              widget.title,
-              style: StyleText.ralewaySemiBold.copyWith(
-                  fontSize: UISize.fontSize(16),
-                  letterSpacing: 2,
-                  color: UIColors.primaryWhite),
-            ),
+            child: widget.isLoading
+                ? CircularProgressIndicator()
+                : Text(
+                    widget.title,
+                    style: StyleText.ralewaySemiBold.copyWith(
+                        fontSize: UISize.fontSize(16),
+                        letterSpacing: 2,
+                        color: UIColors.primaryWhite),
+                  ),
           ),
         ),
       ),

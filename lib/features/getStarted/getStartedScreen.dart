@@ -35,7 +35,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
     ScreenUtil.init(context, width: 375, height: 812, allowFontScaling: true);
 
     return Scaffold(
-        backgroundColor: UIColors.primaryWhite,
+        backgroundColor: Colors.white,
         body: SafeArea(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -86,13 +86,13 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                                 height: ScreenUtil.screenHeight / 2,
                                 padding: EdgeInsets.all(30),
                                 width: ScreenUtil.screenHeight / 2,
-                                child: Icon(
-                                  Icons.sentiment_satisfied,
-                                  size: 100,
-                                )
-                                // Image.asset(
-                                //     walkthroughItems[info.index]["image"])
-                                ),
+                                child:
+                                    // Icon(
+                                    //   Icons.sentiment_satisfied,
+                                    //   size: 100,
+                                    // )
+                                    Image.asset(
+                                        walkthroughItems[info.index]["image"])),
                           )),
                         ],
                       ),
@@ -158,19 +158,19 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
       "title": "BLOCKVOTE",
       "subtitle":
           "A Blockchain based voting application that allows you to host or vote a poll.",
-      "image": "lib/assets/images/walkthrough2.png"
+      "image": "assets/one.png"
     },
     {
       "title": "PROTECT YOUR PRIVACY",
       "subtitle":
           "Nobody can track or alter who you vote. Privacy is guranteed!",
-      "image": "lib/assets/images/walkthrough3.png"
+      "image": "assets/two.png"
     },
     {
       "title": "REALTIME VOTING RESULT",
       "subtitle":
           "Get a realtime view of voting result in an interactive chart.",
-      "image": "lib/assets/images/walkthrough4.png"
+      "image": "assets/three.png"
     },
   ];
 }

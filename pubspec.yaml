@@ -73,6 +73,9 @@ flutter:
     - searchEmpty.png
     - icon1.jpg
     - icon2.png
+    - one.png
+    - two.png
+    - three.png
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see

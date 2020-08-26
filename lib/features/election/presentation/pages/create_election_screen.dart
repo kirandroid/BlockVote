@@ -24,6 +24,7 @@ class CreateElectionScreen extends StatefulWidget {
 class _CreateElectionScreenState extends State<CreateElectionScreen> {
   File electionCover;
   bool hasPassword = false;
+  bool isLoading = false;
   CreateElectionBloc _createElectionBloc = sl<CreateElectionBloc>();
 
   DateTime startDate = DateTime.now();
@@ -46,248 +47,272 @@ class _CreateElectionScreenState extends State<CreateElectionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onTap: () {
-        FocusScope.of(context).requestFocus(new FocusNode());
-      },
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          automaticallyImplyLeading: false,
-          leading: IconButton(
-              icon: Icon(
-                Icons.chevron_left,
-                color: UIColors.darkGray,
-              ),
-              onPressed: () {
-                ExtendedNavigator.of(context).pop();
-              }),
-          title: Text(
-            "CREATE NEW ELECTION",
-            style: StyleText.nunitoRegular.copyWith(
-                color: UIColors.darkGray,
-                fontSize: UISize.fontSize(16),
-                letterSpacing: 2.0),
-          ),
-        ),
-        body: BlocConsumer(
-            bloc: this._createElectionBloc,
-            listener: (BuildContext context, CreateElectionState state) {
-              if (state is CreateElectionCompleted) {
-                CustomDialog(
-                    context: context,
-                    title: "Election QRCode",
-                    buttonTitle: "Okay",
-                    customWidget: QrImage(
-                      data: state.electionId,
-                      version: QrVersions.auto,
-                      size: 320,
-                      gapless: false,
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      sl<ElectionListBloc>().add(GetAllElection());
-                      ExtendedNavigator.of(context).pop();
-                    });
-              }
-            },
-            builder: (BuildContext context, CreateElectionState state) {
-              return SingleChildScrollView(
-                child: Padding(
-                  padding: EdgeInsets.only(
-                      top: UISize.width(20),
-                      left: UISize.width(20),
-                      right: UISize.width(20)),
-                  child: Column(
-                    children: [
-                      ElectionCoverImagePicker(
-                        listener: (File file) {
-                          this.electionCover = file;
-                        },
-                      ),
-                      TextField(
-                          controller: electionNameController,
-                          autofocus: false,
-                          style: StyleText.ralewayMedium.copyWith(
-                              color: UIColors.darkGray,
-                              fontSize: UISize.fontSize(14)),
-                          textInputAction: TextInputAction.done,
-                          textAlignVertical: TextAlignVertical.center,
-                          decoration: InputDecoration(
-                              hintText: "Election Name",
-                              hintStyle: StyleText.ralewayMedium.copyWith(
-                                  color: UIColors.darkGray.withOpacity(0.5)),
-                              focusedBorder: UnderlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: UIColors.primaryWhite)),
-                              prefixIcon: Container(
-                                width: 20,
-                                alignment: Alignment.centerLeft,
-                                child: Icon(
-                                  Icons.accessibility_new,
-                                  color: UIColors.primaryPink,
-                                  size: UISize.width(20),
-                                ),
-                              ),
-                              enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: UIColors.darkGray
-                                          .withOpacity(0.2))))),
-                      Row(
-                        children: [
-                          Text(
-                            "Password?",
-                            style: StyleText.ralewayRegular.copyWith(
-                                color: UIColors.darkGray,
-                                fontSize: UISize.fontSize(12)),
-                          ),
-                          Switch(
-                            value: hasPassword,
-                            onChanged: (value) {
-                              setState(() {
-                                hasPassword = value;
-                              });
-                            },
-                            activeTrackColor: UIColors.primaryDarkTeal,
-                            activeColor: UIColors.primaryTeal,
-                          ),
-                          Expanded(
-                            child: TextField(
-                                controller: passwordController,
-                                enabled: hasPassword,
-                                autofocus: false,
-                                style: StyleText.ralewayMedium.copyWith(
-                                    color: UIColors.darkGray,
-                                    fontSize: UISize.fontSize(14)),
-                                textInputAction: TextInputAction.done,
-                                textAlignVertical: TextAlignVertical.center,
-                                decoration: InputDecoration(
-                                    hintText: "Password",
-                                    hintStyle: StyleText.ralewayMedium.copyWith(
-                                        color:
-                                            UIColors.darkGray.withOpacity(0.5)),
-                                    focusedBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: UIColors.primaryWhite)),
-                                    prefixIcon: Container(
-                                      width: 20,
-                                      alignment: Alignment.centerLeft,
-                                      child: Icon(
-                                        hasPassword
-                                            ? Icons.lock
-                                            : Icons.lock_open,
-                                        color: hasPassword
-                                            ? UIColors.primaryPink
-                                            : UIColors.greyText,
-                                        size: UISize.width(20),
-                                      ),
-                                    ),
-                                    enabledBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: UIColors.darkGray
-                                                .withOpacity(0.2))))),
-                          ),
-                        ],
-                      ),
-                      electionDateWidget(),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                                controller: candidateController,
-                                autofocus: false,
-                                style: StyleText.ralewayMedium.copyWith(
-                                    color: UIColors.darkGray,
-                                    fontSize: UISize.fontSize(14)),
-                                textInputAction: TextInputAction.done,
-                                textAlignVertical: TextAlignVertical.center,
-                                decoration: InputDecoration(
-                                    hintText: "Candidate Name",
-                                    hintStyle: StyleText.ralewayMedium.copyWith(
-                                        color:
-                                            UIColors.darkGray.withOpacity(0.5)),
-                                    focusedBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: UIColors.primaryWhite)),
-                                    prefixIcon: Container(
-                                      width: 20,
-                                      alignment: Alignment.centerLeft,
-                                      child: Icon(
-                                        Icons.people,
-                                        color: UIColors.primaryPink,
-                                        size: UISize.width(20),
-                                      ),
-                                    ),
-                                    enabledBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: UIColors.darkGray
-                                                .withOpacity(0.2))))),
-                          ),
-                          RaisedButton(
-                            onPressed: () {
-                              var uuid = new Uuid();
-                              setState(() {
-                                candidates.add(CandidateResponse(
-                                    candidateId: uuid.v4(),
-                                    candidateImage: "blockvote.png",
-                                    candidateName: candidateController.text));
-                                candidateController.clear();
-                              });
-                            },
-                            color: UIColors.primaryPink,
-                            child: Text(
-                              "Add",
-                              style: StyleText.nunitoBold.copyWith(
-                                  color: UIColors.primaryWhite,
-                                  fontSize: UISize.fontSize(14)),
-                            ),
-                          )
-                        ],
-                      ),
-                      ListView.builder(
-                          primary: false,
-                          shrinkWrap: true,
-                          itemCount: candidates.length,
-                          itemBuilder: (context, index) {
-                            if (candidates.isEmpty) {
-                              return Text(
-                                "No Candidates Added",
-                                style: StyleText.nunitoBold.copyWith(
-                                    color: UIColors.darkGray,
-                                    fontSize: UISize.fontSize(14)),
-                              );
-                            } else {
-                              return ListTile(
-                                title: Text(candidates[index].candidateName),
-                              );
-                            }
-                          })
-                    ],
+    return BlocConsumer(
+        bloc: this._createElectionBloc,
+        listener: (BuildContext context, CreateElectionState state) {
+          if (state is CreateElectionLoading) {
+            setState(() {
+              isLoading = true;
+            });
+          } else if (state is CreateElectionCompleted) {
+            CustomDialog(
+                context: context,
+                title: "Election QRCode",
+                buttonTitle: "Okay",
+                customWidget: Container(
+                  height: 320,
+                  width: 320,
+                  child: QrImage(
+                    data: state.electionId,
+                    version: QrVersions.auto,
+                    size: 320,
+                    gapless: false,
                   ),
                 ),
-              );
-            }),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: FloatingActionButton.extended(
-          icon: Icon(Icons.cloud_upload),
-          label: Text("Submit"),
-          onPressed: () {
-            _createElectionBloc.add(CreateElection(
-                electionName: electionNameController.text,
-                electionPassword: passwordController.text,
-                hasPassword: hasPassword,
-                startDate: startDate,
-                endDate: endDate,
-                isActive: true,
-                candidates: candidates,
-                image: electionCover));
-          },
-        ),
-      ),
-    );
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  sl<ElectionListBloc>().add(GetAllElection());
+                  ExtendedNavigator.of(context).pop();
+                });
+          } else {
+            setState(() {
+              isLoading = false;
+            });
+          }
+        },
+        builder: (BuildContext context, CreateElectionState state) {
+          return GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: () {
+              FocusScope.of(context).requestFocus(new FocusNode());
+            },
+            child: Scaffold(
+                backgroundColor: Colors.white,
+                appBar: AppBar(
+                  backgroundColor: Colors.white,
+                  elevation: 0,
+                  automaticallyImplyLeading: false,
+                  leading: IconButton(
+                      icon: Icon(
+                        Icons.chevron_left,
+                        color: UIColors.darkGray,
+                      ),
+                      onPressed: () {
+                        ExtendedNavigator.of(context).pop();
+                      }),
+                  title: Text(
+                    "CREATE ELECTION",
+                    style: StyleText.nunitoRegular.copyWith(
+                        color: UIColors.darkGray,
+                        fontSize: UISize.fontSize(16),
+                        letterSpacing: 2.0),
+                  ),
+                  actions: <Widget>[
+                    InkWell(
+                      onTap: () {
+                        _createElectionBloc.add(CreateElection(
+                            electionName: electionNameController.text,
+                            electionPassword: passwordController.text,
+                            hasPassword: hasPassword,
+                            startDate: startDate,
+                            endDate: endDate,
+                            isActive: true,
+                            candidates: candidates,
+                            image: electionCover));
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        alignment: Alignment.center,
+                        child: isLoading
+                            ? CircularProgressIndicator()
+                            : Text(
+                                "SUBMIT",
+                                style: StyleText.ralewayMedium.copyWith(
+                                    fontSize: UISize.fontSize(14),
+                                    color: UIColors.primaryDarkTeal),
+                              ),
+                      ),
+                    )
+                  ],
+                ),
+                body: SingleChildScrollView(
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        top: UISize.width(20),
+                        left: UISize.width(20),
+                        right: UISize.width(20)),
+                    child: Column(
+                      children: [
+                        ElectionCoverImagePicker(
+                          listener: (File file) {
+                            this.electionCover = file;
+                          },
+                        ),
+                        TextField(
+                            controller: electionNameController,
+                            autofocus: false,
+                            style: StyleText.ralewayMedium.copyWith(
+                                color: UIColors.darkGray,
+                                fontSize: UISize.fontSize(14)),
+                            textInputAction: TextInputAction.done,
+                            textAlignVertical: TextAlignVertical.center,
+                            decoration: InputDecoration(
+                                hintText: "Election Name",
+                                hintStyle: StyleText.ralewayMedium.copyWith(
+                                    color: UIColors.darkGray.withOpacity(0.5)),
+                                focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: UIColors.primaryWhite)),
+                                prefixIcon: Container(
+                                  width: 20,
+                                  alignment: Alignment.centerLeft,
+                                  child: Icon(
+                                    Icons.accessibility_new,
+                                    color: UIColors.primaryPink,
+                                    size: UISize.width(20),
+                                  ),
+                                ),
+                                enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: UIColors.darkGray
+                                            .withOpacity(0.2))))),
+                        Row(
+                          children: [
+                            Text(
+                              "Password?",
+                              style: StyleText.ralewayRegular.copyWith(
+                                  color: UIColors.darkGray,
+                                  fontSize: UISize.fontSize(12)),
+                            ),
+                            Switch(
+                              value: hasPassword,
+                              onChanged: (value) {
+                                setState(() {
+                                  hasPassword = value;
+                                });
+                              },
+                              activeTrackColor: UIColors.primaryDarkTeal,
+                              activeColor: UIColors.primaryTeal,
+                            ),
+                            Expanded(
+                              child: TextField(
+                                  controller: passwordController,
+                                  enabled: hasPassword,
+                                  autofocus: false,
+                                  style: StyleText.ralewayMedium.copyWith(
+                                      color: UIColors.darkGray,
+                                      fontSize: UISize.fontSize(14)),
+                                  textInputAction: TextInputAction.done,
+                                  textAlignVertical: TextAlignVertical.center,
+                                  decoration: InputDecoration(
+                                      hintText: "Password",
+                                      hintStyle: StyleText.ralewayMedium
+                                          .copyWith(
+                                              color: UIColors.darkGray
+                                                  .withOpacity(0.5)),
+                                      focusedBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: UIColors.primaryWhite)),
+                                      prefixIcon: Container(
+                                        width: 20,
+                                        alignment: Alignment.centerLeft,
+                                        child: Icon(
+                                          hasPassword
+                                              ? Icons.lock
+                                              : Icons.lock_open,
+                                          color: hasPassword
+                                              ? UIColors.primaryPink
+                                              : UIColors.greyText,
+                                          size: UISize.width(20),
+                                        ),
+                                      ),
+                                      enabledBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: UIColors.darkGray
+                                                  .withOpacity(0.2))))),
+                            ),
+                          ],
+                        ),
+                        electionDateWidget(),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                  controller: candidateController,
+                                  autofocus: false,
+                                  style: StyleText.ralewayMedium.copyWith(
+                                      color: UIColors.darkGray,
+                                      fontSize: UISize.fontSize(14)),
+                                  textInputAction: TextInputAction.done,
+                                  textAlignVertical: TextAlignVertical.center,
+                                  decoration: InputDecoration(
+                                      hintText: "Candidate Name",
+                                      hintStyle: StyleText.ralewayMedium
+                                          .copyWith(
+                                              color: UIColors.darkGray
+                                                  .withOpacity(0.5)),
+                                      focusedBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: UIColors.primaryWhite)),
+                                      prefixIcon: Container(
+                                        width: 20,
+                                        alignment: Alignment.centerLeft,
+                                        child: Icon(
+                                          Icons.people,
+                                          color: UIColors.primaryPink,
+                                          size: UISize.width(20),
+                                        ),
+                                      ),
+                                      enabledBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: UIColors.darkGray
+                                                  .withOpacity(0.2))))),
+                            ),
+                            RaisedButton(
+                              onPressed: () {
+                                var uuid = new Uuid();
+                                setState(() {
+                                  candidates.add(CandidateResponse(
+                                      candidateId: uuid.v4(),
+                                      candidateImage: "blockvote.png",
+                                      candidateName: candidateController.text));
+                                  candidateController.clear();
+                                });
+                              },
+                              color: UIColors.primaryPink,
+                              child: Text(
+                                "Add",
+                                style: StyleText.nunitoBold.copyWith(
+                                    color: UIColors.primaryWhite,
+                                    fontSize: UISize.fontSize(14)),
+                              ),
+                            )
+                          ],
+                        ),
+                        ListView.builder(
+                            primary: false,
+                            shrinkWrap: true,
+                            itemCount: candidates.length,
+                            itemBuilder: (context, index) {
+                              if (candidates.isEmpty) {
+                                return Text(
+                                  "No Candidates Added",
+                                  style: StyleText.nunitoBold.copyWith(
+                                      color: UIColors.darkGray,
+                                      fontSize: UISize.fontSize(14)),
+                                );
+                              } else {
+                                return ListTile(
+                                  title: Text(candidates[index].candidateName),
+                                );
+                              }
+                            })
+                      ],
+                    ),
+                  ),
+                )),
+          );
+        });
   }
 
   Widget electionDateWidget() {

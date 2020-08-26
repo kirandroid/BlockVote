@@ -62,28 +62,26 @@ class ElectionDetailBloc
         ElectionStatus electionStatus = VotingConfig()
             .checkVotingStatus(electionResponse: electionResponse);
         Color joinButtonColor = electionStatus.status == 'ACTIVE' &&
-                !electionResponse.pendingVoter
-                    .contains(loggedInUserKey.toString())
-            ? UIColors.primaryGreen
+                (electionResponse.pendingVoter.contains(loggedInUserKey) ||
+                    electionResponse.approvedVoter.contains(loggedInUserKey))
+            ? UIColors.primaryYellow
             : electionStatus.status == 'INACTIVE'
                 ? UIColors.primaryRed
                 : electionStatus.status == 'VOTING'
                     ? UIColors.primaryYellow
-                    : electionResponse.pendingVoter
-                            .contains(loggedInUserKey.toString())
+                    : electionResponse.pendingVoter.contains(loggedInUserKey)
                         ? UIColors.primaryRed
                         : UIColors.primaryGreen;
 
         String joinButtonText = electionStatus.status == 'ACTIVE' &&
-                !electionResponse.pendingVoter
-                    .contains(loggedInUserKey.toString())
-            ? "JOIN"
+                (electionResponse.pendingVoter.contains(loggedInUserKey) ||
+                    electionResponse.approvedVoter.contains(loggedInUserKey))
+            ? "JOINED"
             : electionStatus.status == 'INACTIVE'
                 ? "CLOSED"
                 : electionStatus.status == "VOTING"
                     ? electionStatus.status
-                    : electionResponse.pendingVoter
-                            .contains(loggedInUserKey.toString())
+                    : electionResponse.pendingVoter.contains(loggedInUserKey)
                         ? "JOINED"
                         : "JOIN";
 

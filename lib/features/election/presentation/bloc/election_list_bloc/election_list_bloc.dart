@@ -64,7 +64,8 @@ class ElectionListBloc extends Bloc<ElectionListEvent, ElectionListState> {
       });
 
       if (electionList.isNotEmpty) {
-        yield ElectionListCompleted(allElection: electionList);
+        yield ElectionListCompleted(
+            allElection: electionList.reversed.toList());
       } else {
         yield ElectionError(errorMessage: "No Elections Found!");
       }

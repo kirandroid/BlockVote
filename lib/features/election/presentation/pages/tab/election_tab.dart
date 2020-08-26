@@ -122,38 +122,41 @@ class _ElectionTabState extends State<ElectionTab> {
             child: SizedBox(
               width: MediaQuery.of(context).size.width,
               height: UISize.width(50),
-              child: RaisedButton(
-                shape: RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.circular(25.0)),
-                child: Text(
-                  "VOTE",
-                  style: StyleText.ralewayBold.copyWith(
-                      fontSize: UISize.fontSize(15), letterSpacing: 1),
-                ),
-                onPressed: widget.electionResponse.election.approvedVoter
-                            .contains(widget.loggedInUser) &&
-                        widget.electionResponse.election.status.status ==
-                            'VOTING' &&
-                        !widget.electionResponse.election.votedVoter
-                            .contains(widget.loggedInUser)
-                    ? () {
-                        sl<ElectionDetailBloc>().add(VoteCandidate(
-                            context: context,
-                            candidateId: candidateId,
-                            electionId:
-                                widget.electionResponse.election.electionId,
-                            voterId: widget.loggedInUser));
-                      }
-                    : () {
-                        Toast().showToast(
-                            context: context,
-                            title: "Error",
-                            message: "User cannot vote now!");
-                      },
-                color: UIColors.primaryDarkTeal,
-                elevation: 0,
-                textColor: UIColors.primaryWhite,
-              ),
+              child: widget.electionResponse.election.creatorId ==
+                      widget.loggedInUser
+                  ? Container()
+                  : RaisedButton(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(25.0)),
+                      child: Text(
+                        "VOTE",
+                        style: StyleText.ralewayBold.copyWith(
+                            fontSize: UISize.fontSize(15), letterSpacing: 1),
+                      ),
+                      onPressed: widget.electionResponse.election.approvedVoter
+                                  .contains(widget.loggedInUser) &&
+                              widget.electionResponse.election.status.status ==
+                                  'VOTING' &&
+                              !widget.electionResponse.election.votedVoter
+                                  .contains(widget.loggedInUser)
+                          ? () {
+                              sl<ElectionDetailBloc>().add(VoteCandidate(
+                                  context: context,
+                                  candidateId: candidateId,
+                                  electionId: widget
+                                      .electionResponse.election.electionId,
+                                  voterId: widget.loggedInUser));
+                            }
+                          : () {
+                              Toast().showToast(
+                                  context: context,
+                                  title: "Error",
+                                  message: "User cannot vote now!");
+                            },
+                      color: UIColors.primaryDarkTeal,
+                      elevation: 0,
+                      textColor: UIColors.primaryWhite,
+                    ),
             ),
           ),
         ],
